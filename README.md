@@ -76,31 +76,6 @@ npm run keygen 20          # generate 20 keys
 node tools/keygen.js --verify ORION-XXXXX-XXXXX-XXXXX   # check a key
 ```
 
----
-
-## 💶 Going live (revenue setup)
-
-Three steps, ~15 minutes:
-
-### 1. Change the license salt (required)
-The key checksum is salted. The default salt is public (it's in this repo),
-so **change it before selling keys** — in **both** files, to the same value:
-
-- [`tools/keygen.js`](tools/keygen.js) → `DEFAULT_SALT`
-- [`public/js/license.js`](public/js/license.js) → `ORION_LICENSE_SALT`
-
-If they differ, generated keys won't validate in the browser.
-
-### 2. Create a €1 payment link
-Create a **Stripe Payment Link** (or Paddle / Lemon Squeezy checkout) for
-€1/month and paste the URL into `premiumPaymentLink` in
-[`public/js/config.js`](public/js/config.js). Configure the provider's
-"after payment" email to deliver a key from your `npm run keygen` batch.
-(While the link is empty, Buy buttons open a graceful explainer modal —
-nothing breaks.)
-
-Also update `salesEmail` / `supportEmail` in the same file.
-
 ### 3. Deploy the `public/` folder anywhere static
 There is no backend. Any static host works, free tier included:
 
