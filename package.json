@@ -1,0 +1,28 @@
+{
+  "name": "orion-pdf-editor",
+  "version": "1.0.0",
+  "description": "Orion — the premium PDF editor that costs 1 euro. Client-side, private, enterprise-grade.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "keygen": "node tools/keygen.js",
+    "vendor": "node tools/vendor.js"
+  },
+  "keywords": [
+    "pdf",
+    "editor",
+    "annotate",
+    "merge",
+    "split",
+    "watermark",
+    "esign"
+  ],
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "pdf-lib": "1.17.1",
+    "pdfjs-dist": "3.11.174"
+  }
+}

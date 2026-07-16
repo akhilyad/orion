@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Orion — the premium PDF editor that costs €1</title>
+  <meta name="description" content="Annotate, organize, merge, sign and watermark PDFs entirely in your browser. Your files never leave your machine. Premium is one euro.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&amp;family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&amp;family=Fragment+Mono:ital@0;1&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="nav">
+    <a class="nav-logo" href="/">
+      <span class="logo-star" aria-hidden="true">✦</span> Orion
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-ghost js-activate" type="button">Activate key</button>
+      <a class="btn btn-solid" href="editor.html">Open the editor</a>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <canvas id="constellation" aria-hidden="true"></canvas>
+      <div class="hero-inner">
+        <p class="hero-kicker mono">✦ EVERY PREMIUM FEATURE · ONE EURO</p>
+        <h1 class="hero-title">
+          The premium PDF editor<br>
+          that costs <em class="gold">one&nbsp;euro.</em>
+        </h1>
+        <p class="hero-sub">
+          Annotate, organize, merge, sign, watermark and export — entirely in your
+          browser. Your documents <strong>never leave your machine</strong>.
+          No uploads, no accounts, no €180/year subscription.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-solid btn-lg" href="editor.html">Launch the editor — free</a>
+          <button class="btn btn-gold btn-lg js-buy" type="button">Get Premium · €1</button>
+        </div>
+        <p class="hero-note mono">No sign-up. Works offline after first load.</p>
+      </div>
+    </section>
+
+    <!-- ============ TRUST STRIP ============ -->
+    <section class="strip" aria-label="Privacy guarantees">
+      <span>▪ Zero uploads — 100% client-side</span>
+      <span>▪ No account required</span>
+      <span>▪ GDPR-friendly by design</span>
+      <span>▪ Works offline after first load</span>
+    </section>
+
+    <!-- ============ FEATURES ============ -->
+    <section class="section" id="features">
+      <p class="section-kicker mono">01 — CAPABILITIES</p>
+      <h2 class="section-title">Everything a <em class="gold">€180/year</em> editor does.</h2>
+
+      <div class="features-grid">
+        <article class="feature">
+          <div class="feature-glyph" aria-hidden="true">✎</div>
+          <h3>Annotate anything</h3>
+          <p>Text boxes, freehand ink, highlights, rectangles, ellipses, lines and arrows — with full color and size control.</p>
+        </article>
+        <article class="feature">
+          <div class="feature-glyph" aria-hidden="true">⧉</div>
+          <h3>Organize pages</h3>
+          <p>Rotate, delete and reorder pages by dragging thumbnails. Undo and redo everything.</p>
+        </article>
+        <article class="feature">
+          <div class="feature-glyph" aria-hidden="true">⊕</div>
+          <h3>Merge PDFs</h3>
+          <p>Append other PDFs into your document in seconds. Unlimited files on Premium.</p>
+        </article>
+        <article class="feature is-premium">
+          <div class="feature-glyph" aria-hidden="true">✂</div>
+          <h3>Split &amp; extract <span class="tag-premium mono">€1</span></h3>
+          <p>Pull out any page range into a fresh PDF. Perfect for contracts and scans.</p>
+        </article>
+        <article class="feature is-premium">
+          <div class="feature-glyph" aria-hidden="true">✍</div>
+          <h3>E-signatures <span class="tag-premium mono">€1</span></h3>
+          <p>Draw your signature once, place it on any page, export it burned into the file.</p>
+        </article>
+        <article class="feature is-premium">
+          <div class="feature-glyph" aria-hidden="true">◈</div>
+          <h3>Watermark &amp; numbering <span class="tag-premium mono">€1</span></h3>
+          <p>Stamp every page with a diagonal watermark or clean page numbers.</p>
+        </article>
+        <article class="feature is-premium">
+          <div class="feature-glyph" aria-hidden="true">☰</div>
+          <h3>Fill forms <span class="tag-premium mono">€1</span></h3>
+          <p>Detect AcroForm fields — text, checkboxes, dropdowns — and fill them in place.</p>
+        </article>
+        <article class="feature is-premium">
+          <div class="feature-glyph" aria-hidden="true">⚙</div>
+          <h3>Metadata &amp; optimize <span class="tag-premium mono">€1</span></h3>
+          <p>Edit title, author, subject and keywords. Optimize file structure losslessly.</p>
+        </article>
+        <article class="feature">
+          <div class="feature-glyph" aria-hidden="true">⤓</div>
+          <h3>Export flattened</h3>
+          <p>Annotations are burned into a standards-compliant PDF. Or export any page as PNG.</p>
+        </article>
+        <article class="feature">
+          <div class="feature-glyph" aria-hidden="true">🛡</div>
+          <h3>Private by physics</h3>
+          <p>Processing happens in your browser's memory. There is no server to breach.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ WHY €1 ============ -->
+    <section class="section why">
+      <p class="section-kicker mono">02 — THE MODEL</p>
+      <h2 class="section-title">How can premium cost <em class="gold">€1?</em></h2>
+      <div class="why-grid">
+        <div class="why-item">
+          <p class="why-num mono">€0.00</p>
+          <p>Our server cost per document. Orion runs entirely in your browser — we never store, transfer or process your files.</p>
+        </div>
+        <div class="why-item">
+          <p class="why-num mono">0</p>
+          <p>Databases, upload pipelines, and compliance liabilities. No infrastructure means no costs to pass on to you.</p>
+        </div>
+        <div class="why-item">
+          <p class="why-num mono">€1</p>
+          <p>What's left: a fair price for the tools, and it keeps the lights on. Less than the coffee you're drinking right now.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRICING ============ -->
+    <section class="section" id="pricing">
+      <p class="section-kicker mono">03 — PRICING</p>
+      <h2 class="section-title">Three buckets. One obvious choice.</h2>
+
+      <div class="pricing-grid">
+        <!-- FREE -->
+        <article class="price-card">
+          <h3 class="price-name">Stargazer</h3>
+          <p class="price-amount"><span class="price-cur">€</span>0</p>
+          <p class="price-period mono">free forever</p>
+          <ul class="price-list">
+            <li>View, zoom &amp; navigate PDFs</li>
+            <li>Text, ink, highlight &amp; shape annotations</li>
+            <li>Rotate, delete &amp; reorder pages</li>
+            <li>Merge one extra PDF per document</li>
+            <li>PNG page export</li>
+            <li class="muted">Small “Made with Orion” badge on exports</li>
+          </ul>
+          <a class="btn btn-ghost btn-block" href="editor.html">Start free</a>
+        </article>
+
+        <!-- PREMIUM -->
+        <article class="price-card is-hero">
+          <p class="price-flag mono">MOST TELESCOPES POINT HERE</p>
+          <h3 class="price-name">Premium</h3>
+          <p class="price-amount gold"><span class="price-cur">€</span>1</p>
+          <p class="price-period mono">per month · cancel anytime</p>
+          <ul class="price-list">
+            <li><strong>Everything in Stargazer</strong>, plus:</li>
+            <li>No badge on exports</li>
+            <li>Split &amp; extract page ranges</li>
+            <li>E-signatures &amp; image stamps</li>
+            <li>Watermarks &amp; page numbers</li>
+            <li>Form filling (AcroForms)</li>
+            <li>Metadata editing &amp; lossless optimize</li>
+            <li>Unlimited merging</li>
+            <li>Priority email support</li>
+          </ul>
+          <button class="btn btn-gold btn-block js-buy" type="button">Get Premium · €1</button>
+          <button class="btn btn-link js-activate" type="button">Already have a key? Activate →</button>
+        </article>
+
+        <!-- ENTERPRISE -->
+        <article class="price-card">
+          <h3 class="price-name">Enterprise</h3>
+          <p class="price-amount"><span class="price-cur">€</span>79</p>
+          <p class="price-period mono">per year · 10 seats</p>
+          <ul class="price-list">
+            <li><strong>Everything in Premium</strong>, plus:</li>
+            <li>Volume license keys for your team</li>
+            <li>Self-host on your intranet (air-gapped)</li>
+            <li>Custom branding on exports</li>
+            <li>Invoice billing &amp; procurement docs</li>
+            <li>Priority support with SLA</li>
+          </ul>
+          <a class="btn btn-ghost btn-block js-sales" href="#">Talk to sales</a>
+        </article>
+      </div>
+
+      <!-- Comparison table -->
+      <div class="compare-wrap">
+        <table class="compare">
+          <caption class="sr-only">Feature comparison across pricing buckets</caption>
+          <thead>
+            <tr>
+              <th scope="col">Feature</th>
+              <th scope="col">Stargazer<br><span class="mono muted">€0</span></th>
+              <th scope="col" class="gold-col">Premium<br><span class="mono gold">€1/mo</span></th>
+              <th scope="col">Enterprise<br><span class="mono muted">€79/yr</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>View, zoom, navigate</td><td>●</td><td class="gold-col">●</td><td>●</td></tr>
+            <tr><td>Annotations (text, ink, shapes)</td><td>●</td><td class="gold-col">●</td><td>●</td></tr>
+            <tr><td>Rotate / delete / reorder pages</td><td>●</td><td class="gold-col">●</td><td>●</td></tr>
+            <tr><td>Merge PDFs</td><td>1 extra file</td><td class="gold-col">Unlimited</td><td>Unlimited</td></tr>
+            <tr><td>Badge-free export</td><td>—</td><td class="gold-col">●</td><td>●</td></tr>
+            <tr><td>Split &amp; extract pages</td><td>—</td><td class="gold-col">●</td><td>●</td></tr>
+            <tr><td>E-signatures &amp; image stamps</td><td>—</td><td class="gold-col">●</td><td>●</td></tr>
+            <tr><td>Watermark &amp; page numbers</td><td>—</td><td class="gold-col">●</td><td>●</td></tr>
+            <tr><td>Form filling</td><td>—</td><td class="gold-col">●</td><td>●</td></tr>
+            <tr><td>Metadata &amp; optimize</td><td>—</td><td class="gold-col">●</td><td>●</td></tr>
+            <tr><td>Volume keys &amp; self-hosting</td><td>—</td><td class="gold-col">—</td><td>●</td></tr>
+            <tr><td>Custom branding</td><td>—</td><td class="gold-col">—</td><td>●</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section class="section" id="faq">
+      <p class="section-kicker mono">04 — QUESTIONS</p>
+      <h2 class="section-title">Fair questions, straight answers.</h2>
+
+      <div class="faq-list">
+        <details>
+          <summary>Seriously — why is premium only €1?</summary>
+          <p>Because our marginal cost is zero. Orion does all PDF processing inside your browser, so we pay for no servers, no storage and no bandwidth per document. €1 covers development and support, and the low price is the growth strategy: nobody needs to think twice.</p>
+        </details>
+        <details>
+          <summary>Are my documents uploaded anywhere?</summary>
+          <p>No. Files are opened with the browser's File API and processed in memory on your machine. You can disconnect from the internet after the page loads and everything keeps working. There is no server-side component that ever sees your data.</p>
+        </details>
+        <details>
+          <summary>How does the license work?</summary>
+          <p>After purchase you receive a key like <code>ORION-XXXXX-XXXXX-XXXXX</code>. Paste it into “Activate key” and Premium unlocks in that browser. One key is licensed for one person on up to two devices — we run on trust, like the price suggests.</p>
+        </details>
+        <details>
+          <summary>What about password-protected PDFs?</summary>
+          <p>Encrypted PDFs aren't supported yet — decrypting them client-side is on the roadmap. Orion will tell you clearly when it meets one instead of failing silently.</p>
+        </details>
+        <details>
+          <summary>Can I get a refund?</summary>
+          <p>It's €1, and yes — email support within 14 days and we refund it, no questions. We'd rather keep the goodwill than the euro.</p>
+        </details>
+        <details>
+          <summary>What does Enterprise add?</summary>
+          <p>Volume keys for teams, permission to self-host Orion on your intranet (including fully air-gapped networks — it's just static files), custom export branding, invoice billing and an SLA. €79/year covers 10 seats.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ FINAL CTA ============ -->
+    <section class="final-cta">
+      <h2 class="final-title">Your PDFs. Your machine.<br><em class="gold">One euro.</em></h2>
+      <div class="hero-cta">
+        <a class="btn btn-solid btn-lg" href="editor.html">Open the editor</a>
+        <button class="btn btn-gold btn-lg js-buy" type="button">Get Premium · €1</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-brand">
+      <span class="logo-star" aria-hidden="true">✦</span> Orion
+      <span class="mono muted footer-ver"></span>
+    </div>
+    <p class="muted">Client-side PDF editing. No uploads, ever.</p>
+    <nav class="footer-links" aria-label="Footer">
+      <a href="editor.html">Editor</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a class="js-sales" href="#">Contact</a>
+    </nav>
+  </footer>
+
+  <!-- ============ ACTIVATE MODAL ============ -->
+  <div class="modal-backdrop" id="modal-activate" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="activate-title">
+      <button class="modal-x js-close" type="button" aria-label="Close">×</button>
+      <h3 id="activate-title" class="modal-title">Activate Premium</h3>
+      <p class="modal-sub">Paste the license key from your purchase email.</p>
+      <input class="input mono" id="license-input" type="text" placeholder="ORION-XXXXX-XXXXX-XXXXX" autocomplete="off" spellcheck="false">
+      <p class="modal-error" id="license-error" hidden>That key doesn't validate. Check for typos — keys never contain I, L, O, 0 or 1.</p>
+      <button class="btn btn-gold btn-block" id="license-submit" type="button">Activate</button>
+      <p class="modal-fine muted">Don't have a key yet? <button class="btn-inline js-buy" type="button">Get one for €1</button></p>
+    </div>
+  </div>
+
+  <!-- ============ BUY MODAL (fallback when no payment link configured) ============ -->
+  <div class="modal-backdrop" id="modal-buy" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="buy-title">
+      <button class="modal-x js-close" type="button" aria-label="Close">×</button>
+      <h3 id="buy-title" class="modal-title">Premium · <span class="gold">€1</span></h3>
+      <p class="modal-sub">Checkout isn't wired up on this deployment yet.</p>
+      <p>The owner needs to paste a payment link (Stripe, Paddle or Lemon Squeezy) into <code>public/js/config.js</code> → <code>premiumPaymentLink</code>. Until then, keys can be issued manually with <code>npm run keygen</code>.</p>
+      <button class="btn btn-ghost btn-block js-activate" type="button">I already have a key</button>
+    </div>
+  </div>
+
+  <div class="toast-region" id="toasts" aria-live="polite"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/license.js"></script>
+  <script src="js/landing.js"></script>
+</body>
+</html>

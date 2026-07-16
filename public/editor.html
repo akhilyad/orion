@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Orion Editor — edit PDFs in your browser</title>
+  <meta name="description" content="Annotate, organize, merge, sign and export PDFs — all client-side.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&amp;family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&amp;family=Fragment+Mono:ital@0;1&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/editor.css">
+</head>
+<body>
+
+  <!-- ═══════════ TOP BAR ═══════════ -->
+  <header class="topbar">
+    <div class="tb-group tb-left">
+      <a class="tb-logo" href="/" title="Orion home"><span class="gold">✦</span> Orion</a>
+      <span class="tb-file mono" id="file-name">No document</span>
+    </div>
+
+    <div class="tb-group tb-center">
+      <button class="tb-btn" id="btn-undo" title="Undo (Ctrl+Z)" disabled>↺</button>
+      <button class="tb-btn" id="btn-redo" title="Redo (Ctrl+Y)" disabled>↻</button>
+      <span class="tb-sep"></span>
+      <button class="tb-btn" id="btn-zoom-out" title="Zoom out (−)">−</button>
+      <button class="tb-btn tb-zoom mono" id="btn-zoom-fit" title="Fit page">fit</button>
+      <button class="tb-btn" id="btn-zoom-in" title="Zoom in (+)">+</button>
+      <span class="tb-sep"></span>
+      <button class="tb-btn" id="btn-prev" title="Previous page (←)">‹</button>
+      <span class="tb-page mono" id="page-indicator">– / –</span>
+      <button class="tb-btn" id="btn-next" title="Next page (→)">›</button>
+    </div>
+
+    <div class="tb-group tb-right">
+      <button class="tb-chip" id="license-chip" title="License status">Free plan · Upgrade €1</button>
+      <button class="btn-min" id="btn-export-png" title="Export current page as PNG">PNG</button>
+      <button class="btn-min btn-min-gold" id="btn-export-pdf" title="Export PDF (Ctrl+S)">⤓ Export PDF</button>
+    </div>
+  </header>
+
+  <!-- ═══════════ TOOLBAR ═══════════ -->
+  <div class="toolbar">
+    <div class="tool-group">
+      <button class="tool-btn wide" id="btn-open" title="Open a PDF (Ctrl+O)">⌸ Open</button>
+      <button class="tool-btn wide" id="btn-merge" title="Append another PDF">⊕ Merge</button>
+    </div>
+
+    <span class="tool-sep"></span>
+
+    <div class="tool-group" id="tool-buttons">
+      <button class="tool-btn is-active" data-tool="select" title="Select / move (V)">⭢</button>
+      <button class="tool-btn" data-tool="text" title="Text (T)">T</button>
+      <button class="tool-btn" data-tool="pen" title="Pen (P)">✎</button>
+      <button class="tool-btn" data-tool="highlighter" title="Highlighter (H)">▆</button>
+      <button class="tool-btn" data-tool="highlight" title="Highlight area">▢</button>
+      <button class="tool-btn" data-tool="rect" title="Rectangle (R)">□</button>
+      <button class="tool-btn" data-tool="ellipse" title="Ellipse (E)">◯</button>
+      <button class="tool-btn" data-tool="line" title="Line (L)">╱</button>
+      <button class="tool-btn" data-tool="arrow" title="Arrow (A)">↗</button>
+    </div>
+
+    <span class="tool-sep"></span>
+
+    <div class="tool-group">
+      <button class="tool-btn wide premium-tool" id="btn-sign" title="Draw & place a signature">✍ Sign <span class="lock mono">€1</span></button>
+      <button class="tool-btn wide premium-tool" id="btn-image" title="Insert an image">▣ Image <span class="lock mono">€1</span></button>
+    </div>
+
+    <span class="tool-sep"></span>
+
+    <div class="tool-group props">
+      <label class="prop" title="Color">
+        <input type="color" id="prop-color" value="#e8483f">
+      </label>
+      <label class="prop mono" title="Stroke width">
+        <span>w</span>
+        <input type="range" id="prop-width" min="1" max="14" step="1" value="3">
+      </label>
+      <label class="prop mono" title="Font size">
+        <span>aA</span>
+        <input type="number" id="prop-size" min="6" max="96" step="1" value="16">
+      </label>
+    </div>
+
+    <span class="tool-sep"></span>
+
+    <div class="tool-group">
+      <button class="tool-btn" id="btn-rotate-l" title="Rotate page left">⟲</button>
+      <button class="tool-btn" id="btn-rotate-r" title="Rotate page right">⟳</button>
+      <button class="tool-btn" id="btn-delete-page" title="Delete current page">🗑</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ WORKSPACE ═══════════ -->
+  <div class="workspace">
+    <aside class="thumbs-rail" id="thumbs" aria-label="Pages"></aside>
+
+    <main class="stage" id="stage">
+      <div class="page-wrap" id="page-wrap" hidden>
+        <canvas id="page-canvas"></canvas>
+        <canvas id="overlay-canvas"></canvas>
+      </div>
+
+      <div class="dropzone" id="dropzone">
+        <div class="dz-star" aria-hidden="true">✦</div>
+        <h1 class="dz-title">Drop a PDF here</h1>
+        <p class="dz-sub">or</p>
+        <button class="dz-btn" id="btn-open-2">Choose a file</button>
+        <p class="dz-fine mono">Processed locally — your file never leaves this device.</p>
+      </div>
+    </main>
+
+    <aside class="pro-rail" id="pro-rail">
+      <p class="rail-title mono">PRO TOOLS</p>
+
+      <details class="panel" id="panel-watermark">
+        <summary>◈ Watermark <span class="lock mono">€1</span></summary>
+        <div class="panel-body">
+          <input class="p-input" id="wm-text" type="text" placeholder="CONFIDENTIAL" value="CONFIDENTIAL">
+          <div class="p-row">
+            <input type="color" id="wm-color" value="#8a8a8a" title="Watermark color">
+            <input type="range" id="wm-opacity" min="5" max="60" value="15" title="Opacity %">
+          </div>
+          <button class="p-btn premium-action" id="btn-watermark">Stamp all pages</button>
+        </div>
+      </details>
+
+      <details class="panel" id="panel-numbers">
+        <summary>№ Page numbers <span class="lock mono">€1</span></summary>
+        <div class="panel-body">
+          <select class="p-input" id="pn-format">
+            <option value="{n} / {total}">1 / 12</option>
+            <option value="Page {n} of {total}">Page 1 of 12</option>
+            <option value="{n}">1</option>
+            <option value="— {n} —">— 1 —</option>
+          </select>
+          <button class="p-btn premium-action" id="btn-numbers">Number all pages</button>
+        </div>
+      </details>
+
+      <details class="panel" id="panel-extract">
+        <summary>✂ Extract pages <span class="lock mono">€1</span></summary>
+        <div class="panel-body">
+          <input class="p-input mono" id="ex-range" type="text" placeholder="e.g. 1-3, 5">
+          <button class="p-btn premium-action" id="btn-extract">Extract to new PDF</button>
+        </div>
+      </details>
+
+      <details class="panel" id="panel-forms">
+        <summary>☰ Fill forms <span class="lock mono">€1</span></summary>
+        <div class="panel-body">
+          <div id="form-fields" class="form-fields">
+            <p class="p-hint">Open the panel to scan for form fields.</p>
+          </div>
+          <button class="p-btn premium-action" id="btn-forms-apply" hidden>Apply values</button>
+        </div>
+      </details>
+
+      <details class="panel" id="panel-meta">
+        <summary>⚙ Metadata <span class="lock mono">€1</span></summary>
+        <div class="panel-body">
+          <input class="p-input" id="md-title" type="text" placeholder="Title">
+          <input class="p-input" id="md-author" type="text" placeholder="Author">
+          <input class="p-input" id="md-subject" type="text" placeholder="Subject">
+          <input class="p-input" id="md-keywords" type="text" placeholder="Keywords, comma, separated">
+          <button class="p-btn premium-action" id="btn-meta">Save metadata</button>
+        </div>
+      </details>
+
+      <details class="panel" id="panel-optimize">
+        <summary>◉ Optimize <span class="lock mono">€1</span></summary>
+        <div class="panel-body">
+          <p class="p-hint">Rewrites the file structure and drops dead objects. Lossless.</p>
+          <button class="p-btn premium-action" id="btn-optimize">Optimize file</button>
+          <p class="p-hint" id="opt-result"></p>
+        </div>
+      </details>
+
+      <div class="rail-upsell" id="rail-upsell">
+        <p><strong>Everything above: €1.</strong></p>
+        <p class="muted">One euro a month. All pro tools. No badge on exports.</p>
+        <button class="p-btn p-btn-gold" id="btn-upsell">Unlock Premium · €1</button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ═══════════ MODALS ═══════════ -->
+
+  <!-- Upgrade / activate -->
+  <div class="modal-backdrop" id="modal-upgrade" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="up-title">
+      <button class="modal-x js-close" type="button" aria-label="Close">×</button>
+      <h3 class="modal-title" id="up-title">Premium · <span class="gold">€1</span></h3>
+      <p class="modal-sub" id="up-reason">This tool is part of Premium — one euro, everything unlocked.</p>
+      <button class="p-btn p-btn-gold" id="btn-buy-now">Get Premium · €1</button>
+      <div class="up-divider mono">or activate a key</div>
+      <input class="p-input mono" id="up-key" type="text" placeholder="ORION-XXXXX-XXXXX-XXXXX" autocomplete="off" spellcheck="false">
+      <p class="modal-error" id="up-error" hidden>That key doesn't validate — check for typos.</p>
+      <button class="p-btn" id="btn-activate-key">Activate key</button>
+    </div>
+  </div>
+
+  <!-- Text annotation -->
+  <div class="modal-backdrop" id="modal-text" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tx-title">
+      <button class="modal-x js-close" type="button" aria-label="Close">×</button>
+      <h3 class="modal-title" id="tx-title">Text</h3>
+      <textarea class="p-input" id="tx-value" rows="3" placeholder="Type your text…"></textarea>
+      <div class="p-row">
+        <label class="mono">size <input class="p-input p-input-s" id="tx-size" type="number" min="6" max="96" value="16"></label>
+        <input type="color" id="tx-color" value="#e8483f" title="Text color">
+      </div>
+      <button class="p-btn p-btn-gold" id="tx-ok">Place text</button>
+    </div>
+  </div>
+
+  <!-- Signature pad -->
+  <div class="modal-backdrop" id="modal-sign" hidden>
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="sg-title">
+      <button class="modal-x js-close" type="button" aria-label="Close">×</button>
+      <h3 class="modal-title" id="sg-title">Draw your signature</h3>
+      <canvas id="sign-pad" width="520" height="180"></canvas>
+      <div class="p-row">
+        <label class="mono">ink
+          <select class="p-input p-input-s" id="sg-color">
+            <option value="#1b1f3a">Ink blue</option>
+            <option value="#111111">Black</option>
+          </select>
+        </label>
+        <button class="p-btn p-btn-s" id="sg-clear">Clear</button>
+      </div>
+      <button class="p-btn p-btn-gold" id="sg-ok">Use signature → click the page to place</button>
+    </div>
+  </div>
+
+  <div class="toast-region" id="toasts" aria-live="polite"></div>
+
+  <input type="file" id="file-open" accept="application/pdf,.pdf" hidden>
+  <input type="file" id="file-merge" accept="application/pdf,.pdf" hidden>
+  <input type="file" id="file-image" accept="image/png,image/jpeg,image/webp" hidden>
+
+  <script src="js/config.js"></script>
+  <script src="js/license.js"></script>
+  <script src="vendor/pdf.min.js"></script>
+  <script src="vendor/pdf-lib.min.js"></script>
+  <script type="module" src="js/editor/main.js"></script>
+</body>
+</html>
