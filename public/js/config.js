@@ -32,7 +32,14 @@ window.ORION_CONFIG = {
    * client identifiers — safe to commit. While null, the login page
    * runs in placeholder mode and offers key activation instead.
    */
-  firebase: null,
+  firebase: {
+    apiKey: 'AIzaSyCK6YKfMPX5XCIgMOOudhRJjyauQGHb1pg',
+    authDomain: 'orionpdf-e74a9.firebaseapp.com',
+    projectId: 'orionpdf-e74a9',
+    storageBucket: 'orionpdf-e74a9.firebasestorage.app',
+    messagingSenderId: '420218743001',
+    appId: '1:420218743001:web:8fd56ec838eb18c77836c8',
+  },
 
   /** Free-trial limits (enforced client-side). */
   limits: {
