@@ -19,7 +19,7 @@ window.ORION_CONFIG = {
    * While empty, checkout buttons show a toast with instructions
    * instead — nothing breaks.
    */
-  premiumPaymentLink: 'https://buy.stripe.com/test_14AcN69DS1zR9uxbXu9ws00',
+  premiumPaymentLink: 'https://buy.stripe.com/bJefZh5wP8CZaGhfzOgEg00',
 
   /** Where Enterprise leads go. */
   salesEmail: 'sales@orion-pdf.example',
