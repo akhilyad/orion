@@ -90,10 +90,50 @@
     validateKey: validateKey,
   };
 
-  // Session fallback for private browsing.
+  /* ── Account-linked premium ─────────────────────────────────────────
+   * Set by auth.js when a signed-in user's email has a paid entitlement
+   * (Stripe webhook → Firestore). Works alongside key activation.
+   */
+  var ACCOUNT_KEY = 'orion.account.v1';
+
+  function accountPremium() {
+    try {
+      var raw = localStorage.getItem(ACCOUNT_KEY);
+      if (!raw) return false;
+      return JSON.parse(raw).premium === true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  window.OrionAccount = {
+    /** Persist the signed-in account's entitlement (auth.js only). */
+    setPremium: function (email, premium) {
+      try {
+        if (premium) {
+          localStorage.setItem(ACCOUNT_KEY, JSON.stringify({ email: email, premium: true }));
+        } else {
+          localStorage.removeItem(ACCOUNT_KEY);
+        }
+      } catch (e) {
+        window.__orionSessionPremium = !!premium;
+      }
+    },
+    premium: accountPremium,
+    email: function () {
+      try {
+        var raw = localStorage.getItem(ACCOUNT_KEY);
+        return raw ? JSON.parse(raw).email || '' : '';
+      } catch (e) {
+        return '';
+      }
+    },
+  };
+
+  // Session fallback for private browsing + account entitlement.
   var _isPremium = window.OrionLicense.isPremium;
   window.OrionLicense.isPremium = function () {
-    return !!window.__orionSessionPremium || _isPremium();
+    return !!window.__orionSessionPremium || accountPremium() || _isPremium();
   };
 
   /* ── Free trial counter ─────────────────────────────────────────────

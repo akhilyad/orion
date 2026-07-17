@@ -121,6 +121,31 @@ There is no backend. Any static host works, free tier included:
 it. If you self-host with nginx/Apache instead, copy the security headers
 from `server.js` (especially `Content-Security-Policy`).
 
+### Accounts + automatic premium activation (optional)
+
+Sign-in (Google / GitHub / Facebook / phone) lives at `/account.html`, powered
+by Firebase Auth — config goes in `ORION_CONFIG.firebase`. To make a Stripe
+purchase unlock Premium automatically, deploy the included Cloud Function:
+
+```bash
+npm i -g firebase-tools
+firebase login
+firebase use <your-project-id>
+cd functions && npm install && cd ..
+firebase functions:secrets:set STRIPE_SECRET_KEY       # sk_live_... from Stripe
+firebase functions:secrets:set STRIPE_WEBHOOK_SECRET   # whsec_... (created below)
+firebase deploy --only functions,firestore
+```
+
+Then in the Stripe dashboard → Developers → Webhooks, add an endpoint
+pointing at the deployed `stripeWebhook` URL and subscribe it to
+`checkout.session.completed` and `customer.subscription.deleted`; copy the
+signing secret into `STRIPE_WEBHOOK_SECRET`. Flow: buyer pays via the
+Payment Link → webhook writes `entitlements/{email}` in Firestore → buyer
+signs in on `/account.html` with the same email → Premium unlocks in that
+browser. Requires the Blaze (pay-as-you-go) Firebase plan for functions;
+Firestore reads at this scale stay within the free tier.
+
 ### The economics
 - Hosting: €0 (static, client-side processing)
 - Payment processing: Stripe's fee is the main cost per sale — on €1

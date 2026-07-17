@@ -77,11 +77,41 @@
     firebase.initializeApp(cfg);
     var auth = firebase.auth();
 
+    /**
+     * Check the Firestore entitlement written by the Stripe webhook:
+     * entitlements/{email} → { premium: true }. Uses the REST API with the
+     * user's ID token so no extra SDK is needed; security rules only allow
+     * reading your own document.
+     */
+    function checkEntitlement(user) {
+      if (!user.email) {
+        // Phone-only accounts have no email to match a Stripe purchase.
+        return Promise.resolve(false);
+      }
+      var url = 'https://firestore.googleapis.com/v1/projects/' +
+        encodeURIComponent(cfg.projectId) +
+        '/databases/(default)/documents/entitlements/' +
+        encodeURIComponent(user.email.toLowerCase());
+      return user.getIdToken()
+        .then(function (token) {
+          return fetch(url, { headers: { Authorization: 'Bearer ' + token } });
+        })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (doc) {
+          return !!(doc && doc.fields && doc.fields.premium &&
+            doc.fields.premium.booleanValue === true);
+        })
+        .catch(function () { return false; });
+    }
+
     auth.onAuthStateChanged(function (user) {
       var isIn = !!user;
       if (signedOut) signedOut.hidden = isIn;
       if (signedIn) signedIn.hidden = !isIn;
-      if (!isIn) return;
+      if (!isIn) {
+        if (window.OrionAccount) window.OrionAccount.setPremium('', false);
+        return;
+      }
       var name = $('user-name'), detail = $('user-detail'), avatar = $('user-avatar');
       if (name) name.textContent = user.displayName || 'Signed in';
       if (detail) detail.textContent = user.email || user.phoneNumber || '';
@@ -89,6 +119,16 @@
         if (user.photoURL) { avatar.src = user.photoURL; avatar.hidden = false; }
         else { avatar.hidden = true; }
       }
+      checkEntitlement(user).then(function (premium) {
+        if (window.OrionAccount) {
+          window.OrionAccount.setPremium(user.email || '', premium);
+        }
+        if (detail && user.email) {
+          detail.textContent = user.email +
+            (premium ? ' · Premium active ✦' : ' · Free plan');
+        }
+        if (premium) toast('Premium is active on this browser. ✦');
+      });
     });
 
     function popup(provider) {

@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // A signed-in user may read only their own entitlement (doc id is
+    // their lowercased email). All writes go through the Cloud Function
+    // (Admin SDK bypasses these rules) — clients can never write.
+    match /entitlements/{email} {
+      allow read: if request.auth != null
+        && request.auth.token.email != null
+        && request.auth.token.email.lower() == email;
+      allow write: if false;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "orion-functions",
+  "description": "Orion — Stripe webhook that grants Premium to Firebase accounts",
+  "private": true,
+  "engines": {
+    "node": "20"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^12.6.0",
+    "firebase-functions": "^6.1.0",
+    "stripe": "^17.4.0"
+  }
+}
