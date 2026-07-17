@@ -25,6 +25,15 @@ window.ORION_CONFIG = {
   salesEmail: 'sales@orion-pdf.example',
   supportEmail: 'support@orion-pdf.example',
 
+  /**
+   * Firebase Auth config for the accounts page (account.html).
+   * Paste the `firebaseConfig` object from the Firebase console here
+   * (Project settings → Your apps → Web app). It contains only public
+   * client identifiers — safe to commit. While null, the login page
+   * runs in placeholder mode and offers key activation instead.
+   */
+  firebase: null,
+
   /** Free-trial limits (enforced client-side). */
   limits: {
     freeTries: 1, // documents a visitor can open (core tools only) before the €1 ask

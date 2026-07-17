@@ -43,13 +43,14 @@ const SECURITY_HEADERS = {
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
   'Content-Security-Policy': [
     "default-src 'self'",
-    "script-src 'self'",
+    // Firebase Auth SDK loads from gstatic and talks to Google identity APIs.
+    "script-src 'self' https://www.gstatic.com https://apis.google.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    "img-src 'self' data: blob:",
-    "connect-src 'self' data: blob:",
+    "img-src 'self' data: blob: https://*.googleusercontent.com https://graph.facebook.com https://avatars.githubusercontent.com",
+    "connect-src 'self' data: blob: https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com",
     "worker-src 'self' blob:",
-    "frame-src 'self' blob:", // print preview renders the PDF in a blob iframe
+    "frame-src 'self' blob: https://*.firebaseapp.com https://accounts.google.com", // print preview + OAuth popups
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
