@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * Orion PDF Editor — zero-dependency static server.
  *

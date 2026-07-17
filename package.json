@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "description": "Orion — the premium PDF editor that costs 1 euro. Client-side, private, enterprise-grade.",
   "main": "server.js",
+  "bin": {
+    "orion-pdf-editor": "server.js"
+  },
+  "files": [
+    "server.js",
+    "public"
+  ],
   "type": "commonjs",
   "scripts": {
     "start": "node server.js",
@@ -19,8 +26,18 @@
     "watermark",
     "esign"
   ],
-  "license": "UNLICENSED",
-  "private": true,
+  "license": "SEE LICENSE IN LICENSE.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akhilyad/orion.git"
+  },
+  "homepage": "https://github.com/akhilyad/orion#readme",
+  "bugs": {
+    "url": "https://github.com/akhilyad/orion/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
   "devDependencies": {
     "pdf-lib": "1.17.1",
     "pdfjs-dist": "3.11.174"
