@@ -16,6 +16,16 @@
  *     RS256 signature), then the caller's own entitlement is returned:
  *     { premium: true|false }.
  *
+ *   POST /trial
+ *     Called by the editor before granting a free-trial document open on
+ *     a browser with no license/account. Increments a per-IP counter in
+ *     KV (IP hashed, never stored raw) and reports whether this device's
+ *     network is still within the free-trial allowance — a second,
+ *     server-enforced layer on top of the client's own localStorage
+ *     counter, since that one alone is trivially reset (incognito mode,
+ *     clearing storage, a throwaway email address does not matter here
+ *     since the trial was never tied to email).
+ *
  * Secrets (wrangler secret put ...):
  *   STRIPE_WEBHOOK_SECRET   whsec_... from the Stripe webhook endpoint
  *   STRIPE_SECRET_KEY       sk_live_... (optional — only needed so a
@@ -24,6 +34,8 @@
  *
  * Vars (wrangler.toml):
  *   FIREBASE_PROJECT_ID     e.g. "orionpdf-e74a9"
+ *   FREE_TRIES              e.g. "1" — must match limits.freeTries in
+ *                           public/js/config.js
  */
 
 const JWKS_URL =
@@ -177,6 +189,32 @@ async function handleStripeWebhook(request, env) {
   return json(200, { received: true });
 }
 
+/* ── Trial rate-limit by IP ──────────────────────────────────────── */
+
+async function hashIp(ip) {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(ip));
+  return bytesToHex(digest).slice(0, 32);
+}
+
+async function handleTrial(request, env) {
+  const ip = request.headers.get('CF-Connecting-IP') || '';
+  if (!ip) return json(200, { allowed: true }); // no IP signal — fail open
+
+  const limit = parseInt(env.FREE_TRIES, 10) || 1;
+  const key = 'trial:' + (await hashIp(ip));
+
+  const raw = await env.ENTITLEMENTS.get(key);
+  const used = parseInt(raw, 10) || 0;
+
+  if (used >= limit) {
+    return json(200, { allowed: false, remaining: 0 });
+  }
+
+  // 180-day TTL so a long-dormant network doesn't stay blocked forever.
+  await env.ENTITLEMENTS.put(key, String(used + 1), { expirationTtl: 60 * 60 * 24 * 180 });
+  return json(200, { allowed: true, remaining: limit - (used + 1) });
+}
+
 async function handleEntitlement(request, env) {
   const auth = request.headers.get('authorization') || '';
   const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
@@ -205,6 +243,9 @@ export default {
     }
     if (request.method === 'GET' && url.pathname === '/entitlement') {
       return handleEntitlement(request, env);
+    }
+    if (request.method === 'POST' && url.pathname === '/trial') {
+      return handleTrial(request, env);
     }
     return json(404, { error: 'not found' });
   },

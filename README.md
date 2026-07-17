@@ -147,6 +147,14 @@ purchase made before the webhook existed):
 npx wrangler kv key put --binding ENTITLEMENTS "email:you@example.com" '{"premium":true}' --remote
 ```
 
+The same Worker also rate-limits the free trial by IP (`POST /trial`), as a
+second layer on top of the client's `localStorage` counter — the client one
+alone resets in incognito mode or after clearing storage, and a throwaway
+email doesn't help bypass either one since the trial was never tied to
+email. `FREE_TRIES` in `wrangler.toml` must match `limits.freeTries` in
+`public/js/config.js`. It fails open (allows the trial) if `entitlementApi`
+is empty or the Worker is unreachable, so the app still works without it.
+
 ### Accounts + automatic premium activation via Firebase (Blaze plan)
 
 Sign-in (Google / GitHub / Facebook / phone) lives at `/account.html`, powered

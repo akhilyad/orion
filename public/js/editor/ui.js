@@ -241,6 +241,24 @@ function rebuildRecentMenu() {
   });
 }
 
+/**
+ * Server-side second opinion on the free trial, keyed by (hashed) IP —
+ * catches incognito mode / cleared localStorage, which the client-only
+ * counter can't. Fails open (allowed: true) if entitlementApi is unset
+ * or unreachable, so the trial still works without a backend configured.
+ */
+async function serverTrialGuard() {
+  const api = CFG.entitlementApi;
+  if (!api) return { allowed: true };
+  try {
+    const res = await fetch(api + '/trial', { method: 'POST' });
+    if (!res.ok) return { allowed: true };
+    return await res.json();
+  } catch (e) {
+    return { allowed: true };
+  }
+}
+
 /** source: { file } | { bytes, name } */
 async function openDocument(source) {
   const trial = window.OrionTrial;
@@ -251,6 +269,17 @@ async function openDocument(source) {
       + 'unlimited documents, every tool, no badge.'
     );
     return;
+  }
+  if (!isPremium() && trial) {
+    const guard = await serverTrialGuard();
+    if (!guard.allowed) {
+      pendingTrialSource = source;
+      showUpgrade(
+        'Your free trial has already been used on this network. Premium is '
+        + '€1 — unlimited documents, every tool, no badge.'
+      );
+      return;
+    }
   }
   await run(async () => {
     const bytes = source.file ? await fileToBytes(source.file) : source.bytes;

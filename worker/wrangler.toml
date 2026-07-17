@@ -4,6 +4,7 @@ compatibility_date = "2026-01-01"
 
 [vars]
 FIREBASE_PROJECT_ID = "orionpdf-e74a9"
+FREE_TRIES = "1"
 
 # Create the namespace once with:
 #   npx wrangler kv namespace create ENTITLEMENTS
