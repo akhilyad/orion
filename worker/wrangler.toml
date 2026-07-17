@@ -10,4 +10,4 @@ FIREBASE_PROJECT_ID = "orionpdf-e74a9"
 # then paste the id it prints below.
 [[kv_namespaces]]
 binding = "ENTITLEMENTS"
-id = "PASTE_KV_NAMESPACE_ID_HERE"
+id = "ff02ec62b1484a7287ab6f8809259792"

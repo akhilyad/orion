@@ -48,7 +48,7 @@ window.ORION_CONFIG = {
    * While empty, auth.js falls back to reading Firestore directly
    * (which requires the Blaze-plan Cloud Function to have written it).
    */
-  entitlementApi: '',
+  entitlementApi: 'https://orion-entitlements.orionpdf.workers.dev',
 
   /** Free-trial limits (enforced client-side). */
   limits: {
