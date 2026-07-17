@@ -351,6 +351,25 @@ em.gold { font-style: italic; }
 .footer-links a { color: var(--ink-dim); text-decoration: none; }
 .footer-links a:hover { color: var(--gold); }
 
+/* ── Legal pages (privacy / terms) ──────────────────────────────── */
+.legal-main { max-width: 760px; margin: 0 auto; padding: clamp(60px, 9vh, 100px) 20px clamp(80px, 10vh, 120px); }
+.legal-kicker { color: var(--gold); margin-bottom: 14px; }
+.legal-title {
+  font-family: var(--font-display); font-weight: 470;
+  font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+.legal-updated { margin-bottom: clamp(34px, 5vh, 48px); }
+.legal-body h2 {
+  font-family: var(--font-display); font-weight: 560; font-size: 22px;
+  margin: 40px 0 12px;
+}
+.legal-body h2:first-child { margin-top: 0; }
+.legal-body p { margin-bottom: 14px; max-width: 66ch; }
+.legal-body ul { margin: 0 0 14px 20px; max-width: 66ch; }
+.legal-body li { margin-bottom: 6px; }
+.legal-body a { color: var(--gold); }
+
 /* ── Modals ──────────────────────────────────────────────────────── */
 /* The hidden attribute must always win, even over author display rules. */
 [hidden] { display: none !important; }

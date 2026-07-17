@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy Policy — Orion</title>
+  <meta name="description" content="Orion's privacy policy: what data is collected, what never leaves your device, and how sign-in works.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&amp;family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&amp;family=Fragment+Mono:ital@0;1&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="nav">
+    <a class="nav-logo" href="/">
+      <span class="logo-star" aria-hidden="true">✦</span> Orion
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="/#features">Features</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="account.html">Log in</a>
+      <a class="btn btn-solid" href="editor.html">Open the editor</a>
+    </div>
+  </header>
+
+  <main id="main" class="legal-main">
+    <p class="legal-kicker mono">LEGAL</p>
+    <h1 class="legal-title">Privacy Policy</h1>
+    <p class="legal-updated muted mono">Last updated: 17 July 2026</p>
+
+    <div class="legal-body">
+      <h2>The short version</h2>
+      <p>
+        Orion edits PDFs entirely inside your browser. Your documents are never
+        uploaded, transmitted, or stored on any server — Orion has no backend
+        that ever sees the contents of a file you open. That design choice, not
+        a policy promise, is what keeps your documents private.
+      </p>
+
+      <h2>What we don't collect</h2>
+      <ul>
+        <li>The contents of any PDF you open, edit, or export</li>
+        <li>File names, page counts, or metadata from your documents</li>
+        <li>Analytics or tracking scripts on the editor or landing page</li>
+      </ul>
+
+      <h2>What is collected, and why</h2>
+      <p>If you choose to sign in or make a purchase, a small amount of account
+      data is processed to run the service:</p>
+      <ul>
+        <li>
+          <strong>Sign-in (optional).</strong> If you sign in via Google, GitHub,
+          Facebook, or phone number on the Account page, Firebase Authentication
+          processes your chosen provider's identity (e.g. name, email, avatar)
+          to create your session. Orion never sees your provider password.
+        </li>
+        <li>
+          <strong>Purchases.</strong> Payments are processed entirely by Stripe.
+          Orion never receives or stores your card details. Stripe shares the
+          email address used at checkout so Premium can be linked to your
+          account.
+        </li>
+        <li>
+          <strong>Entitlement status.</strong> To remember that you've paid,
+          Orion stores a minimal record — your email address and a
+          <code class="mono">premium: true/false</code> flag — in a key-value
+          store. No other profile data is kept.
+        </li>
+        <li>
+          <strong>Trial-abuse prevention.</strong> To keep the free trial to one
+          document per device/network as intended, a hashed version of your IP
+          address (never the raw address) is briefly recorded to enforce that
+          limit. It is not linked to your identity, browsing activity, or any
+          document you open.
+        </li>
+        <li>
+          <strong>Local storage.</strong> Your browser's own storage
+          (<code class="mono">localStorage</code>) keeps your license key,
+          trial count, and sign-in state on your device. Clearing your
+          browser's site data removes it.
+        </li>
+      </ul>
+
+      <h2>Third parties</h2>
+      <p>Orion relies on a small number of infrastructure providers to run
+      sign-in and payments:</p>
+      <ul>
+        <li><strong>Google Firebase</strong> — authentication</li>
+        <li><strong>Stripe</strong> — payment processing</li>
+        <li><strong>Cloudflare</strong> — the entitlement/anti-abuse API</li>
+        <li><strong>Google Fonts</strong> — typefaces used on this site</li>
+      </ul>
+      <p>Each operates under its own privacy policy; none receive your document
+      contents, because Orion never sends them anywhere.</p>
+
+      <h2>Data retention</h2>
+      <p>Entitlement records persist as long as your account remains eligible
+      for Premium. Trial-abuse counters expire automatically after 180 days.
+      You can request deletion of your account data at any time by contacting
+      support.</p>
+
+      <h2>Your rights</h2>
+      <p>You can request access to, correction of, or deletion of any account
+      data Orion holds about you by emailing the address below. Since documents
+      are never transmitted to us, there is nothing to request regarding file
+      contents — they simply were never sent.</p>
+
+      <h2>Contact</h2>
+      <p>Questions about this policy: <a href="mailto:akhil20698@gmail.com">akhil20698@gmail.com</a></p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-brand">
+      <span class="logo-star" aria-hidden="true">✦</span> Orion
+    </div>
+    <p class="muted">Client-side PDF editing. No uploads, ever.</p>
+    <nav class="footer-links" aria-label="Footer">
+      <a href="editor.html">Editor</a>
+      <a href="account.html">Account</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </nav>
+  </footer>
+
+  <script src="js/config.js"></script>
+</body>
+</html>
