@@ -21,8 +21,12 @@
     </a>
     <nav class="nav-links" aria-label="Primary">
       <a href="#features">Features</a>
-      <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
+    </nav>
+    <nav class="nav-pricing" aria-label="Plans">
+      <a class="nav-plan" href="#pricing">Stargazer <span class="mono">€0</span></a>
+      <a class="nav-plan is-gold" href="#pricing">Premium <span class="mono">€1/mo</span></a>
+      <a class="nav-plan" href="#pricing">Enterprise <span class="mono">€79/yr</span></a>
     </nav>
     <div class="nav-actions">
       <button class="btn btn-ghost js-activate" type="button">Activate key</button>
@@ -47,8 +51,8 @@
           No uploads, no accounts, no €180/year subscription.
         </p>
         <div class="hero-cta">
-          <a class="btn btn-solid btn-lg" href="editor.html">Launch the editor — free</a>
-          <button class="btn btn-gold btn-lg js-buy" type="button">Get Premium · €1</button>
+          <a class="btn btn-solid btn-lg" href="editor.html">Try it free — 2 documents</a>
+          <a class="btn btn-gold btn-lg js-buy" href="#pricing">Get Premium · €1</a>
         </div>
         <p class="hero-note mono">No sign-up. Works offline after first load.</p>
       </div>
@@ -151,16 +155,15 @@
         <article class="price-card">
           <h3 class="price-name">Stargazer</h3>
           <p class="price-amount"><span class="price-cur">€</span>0</p>
-          <p class="price-period mono">free forever</p>
+          <p class="price-period mono">2 full-featured tries</p>
           <ul class="price-list">
-            <li>View, zoom &amp; navigate PDFs</li>
-            <li>Text, ink, highlight &amp; shape annotations</li>
-            <li>Rotate, delete &amp; reorder pages</li>
-            <li>Merge one extra PDF per document</li>
-            <li>PNG page export</li>
+            <li><strong>Every tool unlocked</strong> — no sign-up</li>
+            <li>Open &amp; edit 2 documents free</li>
+            <li>Annotate, organize, merge &amp; sign</li>
+            <li>Watermarks, forms, extract &amp; more</li>
             <li class="muted">Small “Made with Orion” badge on exports</li>
           </ul>
-          <a class="btn btn-ghost btn-block" href="editor.html">Start free</a>
+          <a class="btn btn-ghost btn-block" href="editor.html">Start your free tries</a>
         </article>
 
         <!-- PREMIUM -->
@@ -170,7 +173,7 @@
           <p class="price-amount gold"><span class="price-cur">€</span>1</p>
           <p class="price-period mono">per month · cancel anytime</p>
           <ul class="price-list">
-            <li><strong>Everything in Stargazer</strong>, plus:</li>
+            <li><strong>Everything in the trial</strong>, forever, plus:</li>
             <li>No badge on exports</li>
             <li>Split &amp; extract page ranges</li>
             <li>E-signatures &amp; image stamps</li>
@@ -180,7 +183,7 @@
             <li>Unlimited merging</li>
             <li>Priority email support</li>
           </ul>
-          <button class="btn btn-gold btn-block js-buy" type="button">Get Premium · €1</button>
+          <button class="btn btn-gold btn-block js-checkout" type="button">Get Premium · €1</button>
           <button class="btn btn-link js-activate" type="button">Already have a key? Activate →</button>
         </article>
 
@@ -208,22 +211,23 @@
           <thead>
             <tr>
               <th scope="col">Feature</th>
-              <th scope="col">Stargazer<br><span class="mono muted">€0</span></th>
+              <th scope="col">Stargazer<br><span class="mono muted">€0 · 2 tries</span></th>
               <th scope="col" class="gold-col">Premium<br><span class="mono gold">€1/mo</span></th>
               <th scope="col">Enterprise<br><span class="mono muted">€79/yr</span></th>
             </tr>
           </thead>
           <tbody>
+            <tr><td>Documents</td><td>2 free tries</td><td class="gold-col">Unlimited</td><td>Unlimited</td></tr>
             <tr><td>View, zoom, navigate</td><td>●</td><td class="gold-col">●</td><td>●</td></tr>
             <tr><td>Annotations (text, ink, shapes)</td><td>●</td><td class="gold-col">●</td><td>●</td></tr>
             <tr><td>Rotate / delete / reorder pages</td><td>●</td><td class="gold-col">●</td><td>●</td></tr>
-            <tr><td>Merge PDFs</td><td>1 extra file</td><td class="gold-col">Unlimited</td><td>Unlimited</td></tr>
+            <tr><td>Merge PDFs</td><td>●</td><td class="gold-col">●</td><td>●</td></tr>
+            <tr><td>Split &amp; extract pages</td><td>●</td><td class="gold-col">●</td><td>●</td></tr>
+            <tr><td>E-signatures &amp; image stamps</td><td>●</td><td class="gold-col">●</td><td>●</td></tr>
+            <tr><td>Watermark &amp; page numbers</td><td>●</td><td class="gold-col">●</td><td>●</td></tr>
+            <tr><td>Form filling</td><td>●</td><td class="gold-col">●</td><td>●</td></tr>
+            <tr><td>Metadata &amp; optimize</td><td>●</td><td class="gold-col">●</td><td>●</td></tr>
             <tr><td>Badge-free export</td><td>—</td><td class="gold-col">●</td><td>●</td></tr>
-            <tr><td>Split &amp; extract pages</td><td>—</td><td class="gold-col">●</td><td>●</td></tr>
-            <tr><td>E-signatures &amp; image stamps</td><td>—</td><td class="gold-col">●</td><td>●</td></tr>
-            <tr><td>Watermark &amp; page numbers</td><td>—</td><td class="gold-col">●</td><td>●</td></tr>
-            <tr><td>Form filling</td><td>—</td><td class="gold-col">●</td><td>●</td></tr>
-            <tr><td>Metadata &amp; optimize</td><td>—</td><td class="gold-col">●</td><td>●</td></tr>
             <tr><td>Volume keys &amp; self-hosting</td><td>—</td><td class="gold-col">—</td><td>●</td></tr>
             <tr><td>Custom branding</td><td>—</td><td class="gold-col">—</td><td>●</td></tr>
           </tbody>
@@ -237,6 +241,10 @@
       <h2 class="section-title">Fair questions, straight answers.</h2>
 
       <div class="faq-list">
+        <details>
+          <summary>How does the free trial work?</summary>
+          <p>Open the editor and use everything — every tool is unlocked for your first 2 documents, no sign-up. After that, Orion asks for €1 to continue. Exports during the trial carry a small badge; Premium removes it.</p>
+        </details>
         <details>
           <summary>Seriously — why is premium only €1?</summary>
           <p>Because our marginal cost is zero. Orion does all PDF processing inside your browser, so we pay for no servers, no storage and no bandwidth per document. €1 covers development and support, and the low price is the growth strategy: nobody needs to think twice.</p>
@@ -269,7 +277,7 @@
       <h2 class="final-title">Your PDFs. Your machine.<br><em class="gold">One euro.</em></h2>
       <div class="hero-cta">
         <a class="btn btn-solid btn-lg" href="editor.html">Open the editor</a>
-        <button class="btn btn-gold btn-lg js-buy" type="button">Get Premium · €1</button>
+        <a class="btn btn-gold btn-lg js-buy" href="#pricing">Get Premium · €1</a>
       </div>
     </section>
   </main>
@@ -297,18 +305,7 @@
       <input class="input mono" id="license-input" type="text" placeholder="ORION-XXXXX-XXXXX-XXXXX" autocomplete="off" spellcheck="false">
       <p class="modal-error" id="license-error" hidden>That key doesn't validate. Check for typos — keys never contain I, L, O, 0 or 1.</p>
       <button class="btn btn-gold btn-block" id="license-submit" type="button">Activate</button>
-      <p class="modal-fine muted">Don't have a key yet? <button class="btn-inline js-buy" type="button">Get one for €1</button></p>
-    </div>
-  </div>
-
-  <!-- ============ BUY MODAL (fallback when no payment link configured) ============ -->
-  <div class="modal-backdrop" id="modal-buy" hidden>
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="buy-title">
-      <button class="modal-x js-close" type="button" aria-label="Close">×</button>
-      <h3 id="buy-title" class="modal-title">Premium · <span class="gold">€1</span></h3>
-      <p class="modal-sub">Checkout isn't wired up on this deployment yet.</p>
-      <p>The owner needs to paste a payment link (Stripe, Paddle or Lemon Squeezy) into <code>public/js/config.js</code> → <code>premiumPaymentLink</code>. Until then, keys can be issued manually with <code>npm run keygen</code>.</p>
-      <button class="btn btn-ghost btn-block js-activate" type="button">I already have a key</button>
+      <p class="modal-fine muted">Don't have a key yet? <button class="btn-inline js-checkout" type="button">Get one for €1</button></p>
     </div>
   </div>
 

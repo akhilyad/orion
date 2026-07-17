@@ -24,8 +24,12 @@ export const S = {
   color: '#e8483f',
   strokeWidth: 3,
   fontSize: 16,
+  opacity: 1,           // 0.1 – 1, applied to new annotations
+  fontFamily: 'Helvetica', // Helvetica | TimesRoman | Courier
   selected: null,       // { pageId, index } | null
+  selectedAll: false,   // Select All: every annotation on the current page
   pendingImage: null,   // { dataUrl, fmt, w, h, kind } while placing
+  hiddenAnnot: null,    // { pageId, index } hidden behind an inline editor
 
   mergeCount: 0,        // extra files merged into this document (free limit)
   dirty: false,
@@ -76,6 +80,8 @@ function restore(snap) {
   S.page = snap.page;
   S.mergeCount = snap.mergeCount;
   S.selected = null;
+  S.selectedAll = false;
+  S.hiddenAnnot = null;
 }
 
 /** Call BEFORE mutating state. */

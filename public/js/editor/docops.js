@@ -70,6 +70,24 @@ async function loadWorkingDoc() {
   return PDFDocument.load(S.bytes);
 }
 
+const FONT_KEYS = {
+  Helvetica: 'Helvetica',
+  TimesRoman: 'TimesRoman',
+  Courier: 'Courier',
+};
+
+/** Lazily embed standard fonts per family for one working doc. */
+function makeFontPool(doc) {
+  const pool = new Map();
+  return async function getFont(family) {
+    const key = FONT_KEYS[family] || 'Helvetica';
+    if (!pool.has(key)) {
+      pool.set(key, await doc.embedFont(StandardFonts[key]));
+    }
+    return pool.get(key);
+  };
+}
+
 /**
  * Screen-axis geometry for page i (0-based) at scale 1, derived from pdf.js.
  * dir = user-space vector of "screen right", e = "screen down",
@@ -140,6 +158,36 @@ export async function movePage(from, to) {
   await reloadFromBytes(await doc.save());
 }
 
+export async function duplicatePage(pageIdx) {
+  snapshot();
+  const doc = await loadWorkingDoc();
+  const [copy] = await doc.copyPages(doc, [pageIdx]);
+  doc.insertPage(pageIdx + 1, copy);
+
+  const srcId = S.pageIds[pageIdx];
+  const newId = newPageId();
+  S.pageIds.splice(pageIdx + 1, 0, newId);
+  if (S.annots[srcId]) S.annots[newId] = JSON.parse(JSON.stringify(S.annots[srcId]));
+  if (pageIdx + 1 < S.page) S.page += 1;
+
+  await reloadFromBytes(await doc.save());
+}
+
+/** Insert a blank page before or after pageIdx, matching that page's size. */
+export async function insertBlankPage(pageIdx, where) {
+  snapshot();
+  const doc = await loadWorkingDoc();
+  const ref = doc.getPage(pageIdx);
+  const { width, height } = ref.getSize();
+  const at = where === 'after' ? pageIdx + 1 : pageIdx;
+  doc.insertPage(at, [width, height]);
+
+  S.pageIds.splice(at, 0, newPageId());
+  if (at < S.page) S.page += 1;
+
+  await reloadFromBytes(await doc.save());
+}
+
 export async function mergeBytes(otherBytes, otherName) {
   snapshot();
   const doc = await loadWorkingDoc();
@@ -205,6 +253,51 @@ export async function addPageNumbers({ format = '{n} / {total}', size = 10 } = {
       x: p.x - (g.dir.x * tw) / 2,
       y: p.y - (g.dir.y * tw) / 2,
       size, font, color, rotate: degrees(g.angleDeg),
+    });
+  }
+  await reloadFromBytes(await doc.save());
+}
+
+/**
+ * "Edit text": paint over a run of original page text and type the
+ * replacement on top, matching the original baseline, size and angle.
+ * item = { x, y (baseline, user space), width, size, angleRad }
+ * dx/dy move the retyped text away from the original spot (inline drag);
+ * the cover rectangle always stays on the original.
+ */
+export async function coverAndRetype(pageIdx, item, { text, size, colorHex, fontFamily, dx = 0, dy = 0 } = {}) {
+  snapshot();
+  const doc = await loadWorkingDoc();
+  const page = doc.getPage(pageIdx);
+  const getFont = makeFontPool(doc);
+  const font = await getFont(fontFamily || 'Helvetica');
+
+  const th = item.size;
+  const drawSize = size || th;
+  const angleDeg = (item.angleRad * 180) / Math.PI;
+  const u = { x: Math.cos(item.angleRad), y: Math.sin(item.angleRad) }; // along text
+  const v = { x: -u.y, y: u.x };                                       // text "up"
+
+  const moved = Math.hypot(dx, dy) > 0.5;
+  const newW = text ? font.widthOfTextAtSize(text, drawSize) : 0;
+  const pad = 2;
+  // When the text stays put, the cover must also hide any overhang of the
+  // new (possibly longer) text; when moved, only the original needs hiding.
+  const coverW = (moved ? item.width : Math.max(item.width, newW)) + pad * 2;
+  const coverH = th * 1.42;
+  // Rect origin: back up along the baseline and drop below the descender.
+  const ox = item.x - pad * u.x - 0.28 * th * v.x;
+  const oy = item.y - pad * u.y - 0.28 * th * v.y;
+
+  page.drawRectangle({
+    x: ox, y: oy, width: coverW, height: coverH,
+    color: rgb(1, 1, 1), rotate: degrees(angleDeg),
+  });
+  if (text) {
+    page.drawText(text, {
+      x: item.x + dx, y: item.y + dy, size: drawSize, font,
+      color: hexToRgb(colorHex || '#111111'),
+      rotate: degrees(angleDeg),
     });
   }
   await reloadFromBytes(await doc.save());
@@ -307,7 +400,8 @@ async function embedImageCached(doc, cache, a) {
 }
 
 async function burnAnnotations(doc, { badge }) {
-  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const getFont = makeFontPool(doc);
+  const baseFont = await getFont('Helvetica');
   const cache = new Map();
   const pages = doc.getPages();
 
@@ -317,14 +411,14 @@ async function burnAnnotations(doc, { badge }) {
     const list = S.annots[S.pageIds[i]] || [];
 
     for (const a of list) {
-      await burnOne(page, doc, a, font, g, cache);
+      await burnOne(page, doc, a, getFont, g, cache);
     }
 
     if (badge) {
       const label = 'Made with Orion · the €1 PDF editor';
       const p = g.toPdf(10, g.vh - 7);
       page.drawText(label, {
-        x: p.x, y: p.y, size: 7, font,
+        x: p.x, y: p.y, size: 7, font: baseFont,
         color: rgb(0.55, 0.55, 0.55), opacity: 0.75,
         rotate: degrees(g.angleDeg),
       });
@@ -332,18 +426,20 @@ async function burnAnnotations(doc, { badge }) {
   }
 }
 
-async function burnOne(page, doc, a, font, g, cache) {
+async function burnOne(page, doc, a, getFont, g, cache) {
   const color = hexToRgb(a.color);
+  const alpha = a.opacity != null ? a.opacity : 1;
 
   switch (a.type) {
     case 'text': {
+      const font = await getFont(a.font);
       const lines = String(a.value).split('\n');
       const lh = a.size * 1.25;
       lines.forEach((line, idx) => {
         page.drawText(line, {
           x: a.x + g.e.x * lh * idx,
           y: a.y + g.e.y * lh * idx,
-          size: a.size, font, color,
+          size: a.size, font, color, opacity: alpha,
           rotate: degrees(g.angleDeg),
         });
       });
@@ -366,7 +462,7 @@ async function burnOne(page, doc, a, font, g, cache) {
       const r = userRect(a);
       page.drawRectangle({
         x: r.x, y: r.y, width: r.w, height: r.h,
-        color, opacity: 0.35,
+        color, opacity: 0.35 * alpha,
       });
       break;
     }
@@ -374,7 +470,7 @@ async function burnOne(page, doc, a, font, g, cache) {
       const r = userRect(a);
       page.drawRectangle({
         x: r.x, y: r.y, width: r.w, height: r.h,
-        borderColor: color, borderWidth: a.width,
+        borderColor: color, borderWidth: a.width, borderOpacity: alpha,
       });
       break;
     }
@@ -383,7 +479,7 @@ async function burnOne(page, doc, a, font, g, cache) {
       page.drawEllipse({
         x: r.x + r.w / 2, y: r.y + r.h / 2,
         xScale: r.w / 2, yScale: r.h / 2,
-        borderColor: color, borderWidth: a.width,
+        borderColor: color, borderWidth: a.width, borderOpacity: alpha,
       });
       break;
     }
@@ -392,7 +488,7 @@ async function burnOne(page, doc, a, font, g, cache) {
       page.drawLine({
         start: { x: a.x1, y: a.y1 },
         end: { x: a.x2, y: a.y2 },
-        thickness: a.width, color, lineCap: LineCapStyle.Round,
+        thickness: a.width, color, opacity: alpha, lineCap: LineCapStyle.Round,
       });
       if (a.type === 'arrow') {
         const ang = Math.atan2(a.y2 - a.y1, a.x2 - a.x1);
@@ -404,7 +500,7 @@ async function burnOne(page, doc, a, font, g, cache) {
               x: a.x2 - len * Math.cos(ang + off),
               y: a.y2 - len * Math.sin(ang + off),
             },
-            thickness: a.width, color, lineCap: LineCapStyle.Round,
+            thickness: a.width, color, opacity: alpha, lineCap: LineCapStyle.Round,
           });
         }
       }
@@ -453,6 +549,42 @@ export async function exportPdf({ badge }) {
   S.dirty = false;
   bus.emit('exported');
   return bytes.length;
+}
+
+/** Parse a PDF date string (D:YYYYMMDDHHmmSS…) into a display string. */
+function pdfDate(str) {
+  const m = /^D:(\d{4})(\d{2})?(\d{2})?(\d{2})?(\d{2})?(\d{2})?/.exec(String(str || ''));
+  if (!m) return '';
+  const d = new Date(
+    Number(m[1]), Number(m[2] || 1) - 1, Number(m[3] || 1),
+    Number(m[4] || 0), Number(m[5] || 0), Number(m[6] || 0)
+  );
+  return isNaN(d.getTime()) ? '' : d.toLocaleString();
+}
+
+/** Full document properties via pdf.js metadata + live state. */
+export async function getDocumentInfo() {
+  let info = {};
+  try {
+    const meta = await S.pdf.getMetadata();
+    info = (meta && meta.info) || {};
+  } catch (e) { /* metadata is optional */ }
+  const page = await S.pdf.getPage(S.page);
+  const vp = page.getViewport({ scale: 1 });
+  return {
+    title: info.Title || '',
+    author: info.Author || '',
+    subject: info.Subject || '',
+    keywords: info.Keywords || '',
+    creator: info.Creator || '',
+    producer: info.Producer || '',
+    created: pdfDate(info.CreationDate),
+    modified: pdfDate(info.ModDate),
+    version: info.PDFFormatVersion || '',
+    pages: S.pageCount,
+    fileSize: S.bytes ? S.bytes.length : 0,
+    pageSize: Math.round(vp.width) + ' × ' + Math.round(vp.height) + ' pt',
+  };
 }
 
 /** Extract a page range (with annotations burned) into a new download. */

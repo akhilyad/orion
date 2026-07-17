@@ -49,6 +49,7 @@ const SECURITY_HEADERS = {
     "img-src 'self' data: blob:",
     "connect-src 'self' data: blob:",
     "worker-src 'self' blob:",
+    "frame-src 'self' blob:", // print preview renders the PDF in a blob iframe
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
@@ -89,9 +90,9 @@ const server = http.createServer((req, res) => {
       if (readErr) {
         return send(res, 404, { 'Content-Type': 'text/html; charset=utf-8' },
           '<!doctype html><meta charset="utf-8"><title>404</title>' +
-          '<body style="font-family:sans-serif;background:#0c0e16;color:#e8e4d8;display:grid;place-items:center;height:100vh;margin:0">' +
+          '<body style="font-family:sans-serif;background:#ffffff;color:#171c2b;display:grid;place-items:center;height:100vh;margin:0">' +
           '<div style="text-align:center"><h1 style="font-size:64px;margin:0">404</h1>' +
-          '<p>That page drifted out of orbit.</p><a href="/" style="color:#f0b34e">Back to Orion</a></div>');
+          '<p>That page drifted out of orbit.</p><a href="/" style="color:#a8730f">Back to Orion</a></div>');
       }
       const ext = path.extname(target).toLowerCase();
       const isVendor = target.includes(`${path.sep}vendor${path.sep}`);

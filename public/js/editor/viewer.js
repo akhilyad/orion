@@ -10,6 +10,7 @@ const pdfjsLib = window.pdfjsLib;
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'vendor/pdf.worker.min.js';
 
 let lastViewport = null;
+let lastBase = null; // { w, h } of the current page at scale 1 (pt)
 let renderToken = 0;
 let renderTask = null;
 
@@ -80,12 +81,18 @@ export async function renderPage() {
   if (my !== renderToken) return;
 
   const base = page.getViewport({ scale: 1 });
+  lastBase = { w: base.width, h: base.height };
   let scale;
   if (S.zoomMode === 'fit') {
     const stage = els.stage();
     const avail = Math.max(280, stage.clientWidth - 48);
     const availH = Math.max(280, stage.clientHeight - 48);
     scale = Math.min(avail / base.width, availH / base.height, 3);
+    S.zoomScale = scale;
+  } else if (S.zoomMode === 'fitw') {
+    const stage = els.stage();
+    const avail = Math.max(280, stage.clientWidth - 56);
+    scale = Math.min(avail / base.width, 4);
     S.zoomScale = scale;
   } else {
     scale = S.zoomScale;
@@ -196,6 +203,11 @@ export async function zoomFit() {
   await renderPage();
 }
 
+export async function zoomFitWidth() {
+  S.zoomMode = 'fitw';
+  await renderPage();
+}
+
 export async function gotoPage(n) {
   if (!S.pdf) return;
   const target = Math.min(S.pageCount, Math.max(1, n));
@@ -210,6 +222,9 @@ export async function gotoPage(n) {
 /* ── Coordinate conversion ──────────────────────────────────────── */
 
 export function getViewport() { return lastViewport; }
+
+/** Current page size at scale 1, in PDF points. */
+export function getBaseSize() { return lastBase; }
 
 /** viewport px (y down) → PDF user space (y up). */
 export function toPdfPoint(vx, vy) {

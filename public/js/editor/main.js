@@ -29,10 +29,10 @@ if (missing.length) {
   initUI();
   initAnnotEvents();
 
-  // Re-fit the page when the window resizes (fit mode only).
+  // Re-fit the page when the window resizes (fit modes only).
   let resizeTimer = null;
   window.addEventListener('resize', () => {
-    if (!S.pdf || S.zoomMode !== 'fit') return;
+    if (!S.pdf || S.zoomMode === 'manual') return;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => renderPage(), 140);
   });

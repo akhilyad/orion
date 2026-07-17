@@ -19,10 +19,37 @@ import { S, bus, snapshot, currentPageId, annotsForCurrentPage } from './state.j
 import { toPdfPoint, toViewportPoint, getViewport } from './viewer.js';
 
 const overlay = () => document.getElementById('overlay-canvas');
+const stage = () => document.getElementById('stage');
 
 const imageCache = new Map(); // dataUrl -> HTMLImageElement
 
+const FONT_STACKS = {
+  Helvetica: 'Helvetica, Arial, sans-serif',
+  TimesRoman: '"Times New Roman", Times, serif',
+  Courier: '"Courier New", Courier, monospace',
+};
+function fontStack(fam) {
+  return FONT_STACKS[fam] || FONT_STACKS.Helvetica;
+}
+
 /* ═══════════════════ Drawing ═══════════════════ */
+
+/**
+ * Painter that runs on EVERY overlay redraw (search highlights, text-block
+ * boxes, text selection). Registered once by ui.js — unlike the per-call
+ * `extra` argument, it survives gesture previews and tool interactions.
+ */
+let persistentPainter = null;
+export function setOverlayPainter(fn) {
+  persistentPainter = fn;
+}
+
+/** True when this annotation is hidden behind an open inline editor. */
+function isHiddenAnnot(index) {
+  return !!(S.hiddenAnnot
+    && S.hiddenAnnot.pageId === currentPageId()
+    && S.hiddenAnnot.index === index);
+}
 
 export function redrawOverlay(extra) {
   const cv = overlay();
@@ -35,23 +62,43 @@ export function redrawOverlay(extra) {
 
   const list = annotsForCurrentPage();
   for (let i = 0; i < list.length; i++) {
+    if (isHiddenAnnot(i)) continue;
     drawAnnot(ctx, list[i]);
   }
 
-  // Selection outline
-  if (S.selected && S.selected.pageId === currentPageId()) {
-    const a = list[S.selected.index];
-    if (a) {
+  // Text annotations are "active text blocks": show a 1px dotted bounding
+  // box whenever a text-capable tool is up, so they read as editable.
+  if (['select', 'selecttext', 'text', 'edittext'].includes(S.tool)) {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(23, 28, 43, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 2]);
+    list.forEach((a, i) => {
+      if (a.type !== 'text' || isHiddenAnnot(i)) return;
       const bb = annotBBox(ctx, a);
-      ctx.save();
-      ctx.strokeStyle = '#f0b34e';
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([5, 4]);
-      ctx.strokeRect(bb.x - 6, bb.y - 6, bb.w + 12, bb.h + 12);
-      ctx.restore();
-    }
+      ctx.strokeRect(bb.x - 3, bb.y - 3, bb.w + 6, bb.h + 6);
+    });
+    ctx.restore();
   }
 
+  // Selection outline (single, or every annotation after Select All)
+  const outline = (a) => {
+    const bb = annotBBox(ctx, a);
+    ctx.save();
+    ctx.strokeStyle = '#2563eb';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.strokeRect(bb.x - 6, bb.y - 6, bb.w + 12, bb.h + 12);
+    ctx.restore();
+  };
+  if (S.selectedAll) {
+    list.forEach(outline);
+  } else if (S.selected && S.selected.pageId === currentPageId()) {
+    const a = list[S.selected.index];
+    if (a && !isHiddenAnnot(S.selected.index)) outline(a);
+  }
+
+  if (typeof persistentPainter === 'function') persistentPainter(ctx);
   if (typeof extra === 'function') extra(ctx);
 }
 
@@ -63,7 +110,8 @@ function drawAnnot(ctx, a) {
   switch (a.type) {
     case 'text': {
       const p = vpt(a.x, a.y);
-      ctx.font = `${a.size * scale}px Helvetica, Arial, sans-serif`;
+      ctx.globalAlpha = a.opacity != null ? a.opacity : 1;
+      ctx.font = `${a.size * scale}px ${fontStack(a.font)}`;
       ctx.fillStyle = a.color;
       ctx.textBaseline = 'alphabetic';
       const lines = String(a.value).split('\n');
@@ -91,13 +139,14 @@ function drawAnnot(ctx, a) {
     }
     case 'highlight': {
       const r = vpRect(a);
-      ctx.globalAlpha = 0.35;
+      ctx.globalAlpha = 0.35 * (a.opacity != null ? a.opacity : 1);
       ctx.fillStyle = a.color;
       ctx.fillRect(r.x, r.y, r.w, r.h);
       break;
     }
     case 'rect': {
       const r = vpRect(a);
+      ctx.globalAlpha = a.opacity != null ? a.opacity : 1;
       ctx.strokeStyle = a.color;
       ctx.lineWidth = a.width * scale;
       ctx.strokeRect(r.x, r.y, r.w, r.h);
@@ -105,6 +154,7 @@ function drawAnnot(ctx, a) {
     }
     case 'ellipse': {
       const r = vpRect(a);
+      ctx.globalAlpha = a.opacity != null ? a.opacity : 1;
       ctx.strokeStyle = a.color;
       ctx.lineWidth = a.width * scale;
       ctx.beginPath();
@@ -116,6 +166,7 @@ function drawAnnot(ctx, a) {
     case 'arrow': {
       const p1 = vpt(a.x1, a.y1);
       const p2 = vpt(a.x2, a.y2);
+      ctx.globalAlpha = a.opacity != null ? a.opacity : 1;
       ctx.strokeStyle = a.color;
       ctx.fillStyle = a.color;
       ctx.lineWidth = a.width * scale;
@@ -179,7 +230,7 @@ function annotBBox(ctx, a) {
   const scale = getViewport().scale;
   if (a.type === 'text') {
     const p = vpt(a.x, a.y);
-    ctx.font = `${a.size * scale}px Helvetica, Arial, sans-serif`;
+    ctx.font = `${a.size * scale}px ${fontStack(a.font)}`;
     const lines = String(a.value).split('\n');
     let w = 0;
     lines.forEach((l) => { w = Math.max(w, ctx.measureText(l).width); });
@@ -204,7 +255,8 @@ function annotBBox(ctx, a) {
 let drag = null; // in-progress gesture
 
 const CURSORS = {
-  select: 'default', text: 'text', pen: 'crosshair', highlighter: 'crosshair',
+  select: 'default', hand: 'grab', edittext: 'text', eraser: 'cell',
+  text: 'text', selecttext: 'text', pen: 'crosshair', highlighter: 'crosshair',
   rect: 'crosshair', highlight: 'crosshair', ellipse: 'crosshair',
   line: 'crosshair', arrow: 'crosshair', place: 'copy',
 };
@@ -232,6 +284,30 @@ export function initAnnotEvents() {
         bus.emit('text-annot-request', { vx, vy });
         break;
 
+      case 'edittext':
+        bus.emit('edit-pdf-text-request', { vx, vy });
+        break;
+
+      case 'selecttext':
+        drag = { kind: 'textsel' };
+        bus.emit('textsel', { phase: 'begin', vx, vy });
+        break;
+
+      case 'hand': {
+        const st = stage();
+        drag = {
+          kind: 'pan', sx: e.clientX, sy: e.clientY,
+          sl: st.scrollLeft, st0: st.scrollTop,
+        };
+        cv.style.cursor = 'grabbing';
+        break;
+      }
+
+      case 'eraser':
+        drag = { kind: 'erase', snapped: false };
+        eraseAt(drag, vx, vy);
+        break;
+
       case 'pen':
       case 'highlighter':
         drag = { kind: 'ink', pts: [[vx, vy]] };
@@ -251,6 +327,7 @@ export function initAnnotEvents() {
 
       case 'select':
       default: {
+        S.selectedAll = false;
         const hit = hitTest(vx, vy);
         if (hit) {
           S.selected = { pageId: currentPageId(), index: hit.index };
@@ -274,6 +351,20 @@ export function initAnnotEvents() {
     if (!drag) return;
     const { vx, vy } = pos(e);
 
+    if (drag.kind === 'pan') {
+      const st = stage();
+      st.scrollLeft = drag.sl - (e.clientX - drag.sx);
+      st.scrollTop = drag.st0 - (e.clientY - drag.sy);
+      return;
+    }
+    if (drag.kind === 'erase') {
+      eraseAt(drag, vx, vy);
+      return;
+    }
+    if (drag.kind === 'textsel') {
+      bus.emit('textsel', { phase: 'move', vx, vy });
+      return;
+    }
     if (drag.kind === 'ink') {
       const last = drag.pts[drag.pts.length - 1];
       if (Math.hypot(vx - last[0], vy - last[1]) > 1.5) drag.pts.push([vx, vy]);
@@ -317,6 +408,16 @@ export function initAnnotEvents() {
     drag = null;
     const { vx, vy } = pos(e);
 
+    if (d.kind === 'pan') {
+      cv.style.cursor = CURSORS.hand;
+      return;
+    }
+    if (d.kind === 'erase') return;
+    if (d.kind === 'textsel') {
+      bus.emit('textsel', { phase: 'end', vx, vy });
+      return;
+    }
+
     if (d.kind === 'ink') {
       if (d.pts.length > 1) {
         const hl = S.tool === 'highlighter';
@@ -329,7 +430,7 @@ export function initAnnotEvents() {
           }),
           width: hl ? S.strokeWidth * 4 : S.strokeWidth,
           color: S.color,
-          alpha: hl ? 0.35 : 1,
+          alpha: (hl ? 0.35 : 1) * S.opacity,
         });
         bus.emit('annots-changed');
       }
@@ -339,12 +440,8 @@ export function initAnnotEvents() {
         const p1 = toPdfPoint(d.x0, d.y0);
         const p2 = toPdfPoint(vx, vy);
         snapshot();
-        const base = { color: S.color, width: S.strokeWidth };
-        if (d.shape === 'line' || d.shape === 'arrow') {
-          annotsForCurrentPage().push({ type: d.shape, x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y, ...base });
-        } else {
-          annotsForCurrentPage().push({ type: d.shape, x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y, ...base });
-        }
+        const base = { color: S.color, width: S.strokeWidth, opacity: S.opacity };
+        annotsForCurrentPage().push({ type: d.shape, x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y, ...base });
         bus.emit('annots-changed');
       }
       redrawOverlay();
@@ -461,37 +558,34 @@ function hitTest(vx, vy) {
   return null;
 }
 
+/** Eraser: delete whatever is under the cursor (one snapshot per gesture). */
+function eraseAt(d, vx, vy) {
+  const hit = hitTest(vx, vy);
+  if (!hit) return;
+  if (!d.snapped) { snapshot(); d.snapped = true; }
+  annotsForCurrentPage().splice(hit.index, 1);
+  S.selected = null;
+  S.selectedAll = false;
+  bus.emit('annots-changed');
+  bus.emit('selection');
+  redrawOverlay();
+}
+
 /* ═══════════════════ Public ops ═══════════════════ */
 
-export function addTextAnnotAt(vx, vy, value, size, color) {
-  if (!value || !value.trim()) return;
-  const p = toPdfPoint(vx, vy);
-  snapshot();
-  annotsForCurrentPage().push({
-    type: 'text', x: p.x, y: p.y,
-    size: size || S.fontSize, color: color || S.color, value: value,
-  });
-  bus.emit('annots-changed');
-  redrawOverlay();
-}
-
-export function updateTextAnnot(index, value, size) {
-  const list = annotsForCurrentPage();
-  const a = list[index];
-  if (!a || a.type !== 'text') return;
-  snapshot();
-  if (value && value.trim()) {
-    a.value = value;
-    if (size) a.size = size;
-  } else {
-    list.splice(index, 1);
-    S.selected = null;
-  }
-  bus.emit('annots-changed');
-  redrawOverlay();
-}
-
 export function deleteSelected() {
+  if (S.selectedAll) {
+    const list = annotsForCurrentPage();
+    if (!list.length) { S.selectedAll = false; return false; }
+    snapshot();
+    list.length = 0;
+    S.selectedAll = false;
+    S.selected = null;
+    bus.emit('annots-changed');
+    bus.emit('selection');
+    redrawOverlay();
+    return true;
+  }
   if (!S.selected) return false;
   const list = S.annots[S.selected.pageId];
   if (!list || !list[S.selected.index]) return false;
@@ -506,6 +600,45 @@ export function deleteSelected() {
 
 export function clearSelection() {
   S.selected = null;
+  S.selectedAll = false;
   redrawOverlay();
   bus.emit('selection');
+}
+
+/** Select every annotation on the current page. Returns how many. */
+export function selectAllOnPage() {
+  const list = annotsForCurrentPage();
+  S.selected = null;
+  S.selectedAll = list.length > 0;
+  redrawOverlay();
+  bus.emit('selection');
+  return list.length;
+}
+
+/** Deep copies of the currently selected annotation(s). */
+export function selectedAnnots() {
+  if (S.selectedAll) return JSON.parse(JSON.stringify(annotsForCurrentPage()));
+  if (S.selected && S.selected.pageId === currentPageId()) {
+    const a = annotsForCurrentPage()[S.selected.index];
+    if (a) return [JSON.parse(JSON.stringify(a))];
+  }
+  return [];
+}
+
+/** Paste annotation clones onto the current page, slightly offset. */
+export function pasteAnnots(clones) {
+  if (!clones || !clones.length) return 0;
+  snapshot();
+  const list = annotsForCurrentPage();
+  clones.forEach((raw) => {
+    const a = JSON.parse(JSON.stringify(raw));
+    const dx = 12, dy = -12; // user space: right & down on unrotated pages
+    if (a.type === 'text') { a.x += dx; a.y += dy; }
+    else if (a.type === 'ink') { a.points = a.points.map(([x, y]) => [x + dx, y + dy]); }
+    else { a.x1 += dx; a.y1 += dy; a.x2 += dx; a.y2 += dy; }
+    list.push(a);
+  });
+  bus.emit('annots-changed');
+  redrawOverlay();
+  return clones.length;
 }

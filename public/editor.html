@@ -13,177 +13,454 @@
 </head>
 <body>
 
-  <!-- ═══════════ TOP BAR ═══════════ -->
-  <header class="topbar">
-    <div class="tb-group tb-left">
-      <a class="tb-logo" href="/" title="Orion home"><span class="gold">✦</span> Orion</a>
-      <span class="tb-file mono" id="file-name">No document</span>
-    </div>
+  <!-- ═══════════ MENU BAR ═══════════ -->
+  <header class="menubar" id="menubar">
+    <a class="mb-logo" href="index.html" title="Orion home">
+      <span class="mb-logo-mark">✦</span><span class="mb-logo-name">Orion</span>
+    </a>
 
-    <div class="tb-group tb-center">
-      <button class="tb-btn" id="btn-undo" title="Undo (Ctrl+Z)" disabled>↺</button>
-      <button class="tb-btn" id="btn-redo" title="Redo (Ctrl+Y)" disabled>↻</button>
-      <span class="tb-sep"></span>
-      <button class="tb-btn" id="btn-zoom-out" title="Zoom out (−)">−</button>
-      <button class="tb-btn tb-zoom mono" id="btn-zoom-fit" title="Fit page">fit</button>
-      <button class="tb-btn" id="btn-zoom-in" title="Zoom in (+)">+</button>
-      <span class="tb-sep"></span>
-      <button class="tb-btn" id="btn-prev" title="Previous page (←)">‹</button>
-      <span class="tb-page mono" id="page-indicator">– / –</span>
-      <button class="tb-btn" id="btn-next" title="Next page (→)">›</button>
-    </div>
+    <nav class="mb-menus" aria-label="Application menu">
+      <div class="menu-container">
+        <button class="menu-trigger" data-menu="file">File</button>
+        <div class="menu-dropdown" id="menu-file" hidden>
+          <button data-action="open"><span>Open…</span><span class="shortcut">Ctrl+O</span></button>
+          <div class="menu-sub">
+            <button data-action="noop"><span>Open Recent</span><span class="shortcut">▸</span></button>
+            <div class="menu-sub-items" id="recent-items">
+              <button class="is-disabled" data-action="noop"><span>No recent files this session</span></button>
+            </div>
+          </div>
+          <button data-action="new-blank"><span>New Blank PDF</span><span class="shortcut"></span></button>
+          <div class="divider"></div>
+          <button data-action="save"><span>Save</span><span class="shortcut">Ctrl+S</span></button>
+          <button data-action="save-as"><span>Save As…</span><span class="shortcut">Ctrl+Shift+S</span></button>
+          <div class="divider"></div>
+          <button data-action="print"><span>Print…</span><span class="shortcut">Ctrl+P</span></button>
+          <div class="divider"></div>
+          <button data-action="close-doc"><span>Close</span><span class="shortcut">Ctrl+W</span></button>
+          <div class="divider"></div>
+          <button data-action="properties"><span>Properties…</span><span class="shortcut">Ctrl+D</span></button>
+          <div class="divider"></div>
+          <button data-action="exit"><span>Exit</span><span class="shortcut">Alt+F4</span></button>
+        </div>
+      </div>
 
-    <div class="tb-group tb-right">
-      <button class="tb-chip" id="license-chip" title="License status">Free plan · Upgrade €1</button>
-      <button class="btn-min" id="btn-export-png" title="Export current page as PNG">PNG</button>
-      <button class="btn-min btn-min-gold" id="btn-export-pdf" title="Export PDF (Ctrl+S)">⤓ Export PDF</button>
+      <div class="menu-container">
+        <button class="menu-trigger" data-menu="edit">Edit</button>
+        <div class="menu-dropdown" id="menu-edit" hidden>
+          <button data-action="undo"><span>Undo</span><span class="shortcut">Ctrl+Z</span></button>
+          <button data-action="redo"><span>Redo</span><span class="shortcut">Ctrl+Y</span></button>
+          <div class="divider"></div>
+          <button data-action="cut"><span>Cut</span><span class="shortcut">Ctrl+X</span></button>
+          <button data-action="copy"><span>Copy</span><span class="shortcut">Ctrl+C</span></button>
+          <button data-action="paste"><span>Paste</span><span class="shortcut">Ctrl+V</span></button>
+          <button data-action="delete-sel"><span>Delete</span><span class="shortcut">Del</span></button>
+          <div class="divider"></div>
+          <button data-action="select-all"><span>Select All</span><span class="shortcut">Ctrl+A</span></button>
+          <div class="divider"></div>
+          <button data-action="find"><span>Find</span><span class="shortcut">Ctrl+F</span></button>
+          <button data-action="find-replace"><span>Find &amp; Replace</span><span class="shortcut">Ctrl+H</span></button>
+          <div class="divider"></div>
+          <button data-action="prefs"><span>Preferences…</span><span class="shortcut">Ctrl+K</span></button>
+        </div>
+      </div>
+
+      <div class="menu-container">
+        <button class="menu-trigger" data-menu="view">View</button>
+        <div class="menu-dropdown" id="menu-view" hidden>
+          <div class="group-label">Zoom</div>
+          <button data-action="zoom-in"><span>Zoom In</span><span class="shortcut">Ctrl++</span></button>
+          <button data-action="zoom-out"><span>Zoom Out</span><span class="shortcut">Ctrl+-</span></button>
+          <button data-action="zoom-actual"><span>Actual Size</span><span class="shortcut">Ctrl+1</span></button>
+          <button data-action="fit-width"><span>Fit Width</span><span class="shortcut">Ctrl+2</span></button>
+          <button data-action="fit-page"><span>Fit Page</span><span class="shortcut">Ctrl+0</span></button>
+          <div class="divider"></div>
+          <div class="group-label">Page Display</div>
+          <button data-action="rotate-cw"><span>Rotate Clockwise</span><span class="shortcut">Ctrl+Shift++</span></button>
+          <button data-action="rotate-ccw"><span>Rotate Counter-Clockwise</span><span class="shortcut">Ctrl+Shift+-</span></button>
+          <div class="divider"></div>
+          <div class="group-label">Navigation Panels</div>
+          <button data-action="panel-pages"><span>Thumbnails</span><span class="shortcut">F4</span></button>
+          <button data-action="panel-marks"><span>Bookmarks</span><span class="shortcut"></span></button>
+          <button data-action="panel-files"><span>Attachments</span><span class="shortcut"></span></button>
+          <button data-action="panel-notes"><span>Annotations</span><span class="shortcut"></span></button>
+          <div class="divider"></div>
+          <button data-action="fullscreen"><span>Full Screen</span><span class="shortcut">F11</span></button>
+        </div>
+      </div>
+
+      <div class="menu-container">
+        <button class="menu-trigger" data-menu="tools">Tools</button>
+        <div class="menu-dropdown" id="menu-tools" hidden>
+          <div class="group-label">Content Editing</div>
+          <button data-action="tool-select"><span>Select Tool</span><span class="shortcut">V</span></button>
+          <button data-action="tool-selecttext"><span>Select Text</span><span class="shortcut">I</span></button>
+          <button data-action="tool-hand"><span>Hand Tool</span><span class="shortcut">H</span></button>
+          <button data-action="tool-edittext"><span>Edit Text</span><span class="shortcut">T</span></button>
+          <button data-action="tool-text"><span>Add Text</span><span class="shortcut">A</span></button>
+          <div class="divider"></div>
+          <div class="group-label">Annotation</div>
+          <button data-action="tool-highlighter"><span>Highlight</span><span class="shortcut">L</span></button>
+          <button data-action="tool-pen"><span>Draw</span><span class="shortcut">D</span></button>
+          <button data-action="tool-eraser"><span>Eraser</span><span class="shortcut">E</span></button>
+          <div class="divider"></div>
+          <div class="group-label">Forms &amp; Sign</div>
+          <button data-action="sign"><span>Signature</span><span class="shortcut">S</span></button>
+          <button data-action="stamp"><span>Stamp</span><span class="shortcut"></span></button>
+          <div class="divider"></div>
+          <div class="group-label">Document Processing</div>
+          <button data-action="merge"><span>Merge PDFs…</span><span class="shortcut"></span></button>
+          <button data-action="encrypt"><span>Encrypt…</span><span class="shortcut"></span></button>
+          <button data-action="optimize"><span>Optimize…</span><span class="shortcut"></span></button>
+        </div>
+      </div>
+
+      <div class="menu-container">
+        <button class="menu-trigger" data-menu="help">Help</button>
+        <div class="menu-dropdown" id="menu-help" hidden>
+          <button data-action="docs"><span>Documentation</span><span class="shortcut">F1</span></button>
+          <button data-action="shortcuts"><span>Keyboard Shortcuts</span><span class="shortcut"></span></button>
+          <div class="divider"></div>
+          <button data-action="about"><span>About Orion</span><span class="shortcut"></span></button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="mb-right">
+      <span class="mb-doc mono" id="doc-title">No document open</span>
+      <span class="mb-sep"></span>
+      <span class="mb-pageinfo mono" id="page-info">0 / 0</span>
+      <span class="mb-sep"></span>
+      <button class="tb-chip" id="license-chip" title="License status">Free trial</button>
     </div>
   </header>
 
-  <!-- ═══════════ TOOLBAR ═══════════ -->
-  <div class="toolbar">
+  <!-- ═══════════ MAIN TOOLBAR ═══════════ -->
+  <div class="toolbar" id="toolbar">
     <div class="tool-group">
-      <button class="tool-btn wide" id="btn-open" title="Open a PDF (Ctrl+O)">⌸ Open</button>
-      <button class="tool-btn wide" id="btn-merge" title="Append another PDF">⊕ Merge</button>
+      <button class="tool-btn" data-action="open" title="Open PDF (Ctrl+O)">⌸</button>
+      <button class="tool-btn" data-action="save" title="Save / Export (Ctrl+S)">⤓</button>
+      <button class="tool-btn" data-action="print" title="Print (Ctrl+P)">⎙</button>
+    </div>
+
+    <span class="tool-sep"></span>
+
+    <div class="tool-group">
+      <button class="tool-btn" id="btn-undo" data-action="undo" title="Undo (Ctrl+Z)" disabled>↺</button>
+      <button class="tool-btn" id="btn-redo" data-action="redo" title="Redo (Ctrl+Y)" disabled>↻</button>
+    </div>
+
+    <span class="tool-sep"></span>
+
+    <div class="tool-group">
+      <button class="tool-btn" id="btn-prev" title="Previous page (PageUp)">‹</button>
+      <span class="page-box">
+        <input type="text" class="page-number-input mono" id="page-input" value="1" inputmode="numeric" aria-label="Page number">
+        <span class="page-slash mono">/</span>
+        <span class="page-total mono" id="page-total">0</span>
+      </span>
+      <button class="tool-btn" id="btn-next" title="Next page (PageDown)">›</button>
+    </div>
+
+    <span class="tool-sep"></span>
+
+    <div class="tool-group">
+      <button class="tool-btn" id="btn-zoom-out" title="Zoom out (Ctrl+-)">−</button>
+      <select class="zoom-select mono" id="zoom-select" title="Zoom level">
+        <option value="0.5">50%</option>
+        <option value="0.75">75%</option>
+        <option value="1">100%</option>
+        <option value="1.25">125%</option>
+        <option value="1.5">150%</option>
+        <option value="2">200%</option>
+        <option value="3">300%</option>
+        <option value="fit-width">Fit Width</option>
+        <option value="fit-page" selected>Fit Page</option>
+      </select>
+      <button class="tool-btn" id="btn-zoom-in" title="Zoom in (Ctrl++)">+</button>
     </div>
 
     <span class="tool-sep"></span>
 
     <div class="tool-group" id="tool-buttons">
-      <button class="tool-btn is-active" data-tool="select" title="Select / move (V)">⭢</button>
-      <button class="tool-btn" data-tool="text" title="Text (T)">T</button>
-      <button class="tool-btn" data-tool="pen" title="Pen (P)">✎</button>
-      <button class="tool-btn" data-tool="highlighter" title="Highlighter (H)">▆</button>
-      <button class="tool-btn" data-tool="highlight" title="Highlight area">▢</button>
+      <button class="tool-btn is-active" data-tool="select" title="Select (V)">⭢</button>
+      <button class="tool-btn" data-tool="selecttext" title="Select text (I)">⌶</button>
+      <button class="tool-btn" data-tool="hand" title="Hand (H)">✋</button>
+      <button class="tool-btn" data-tool="edittext" title="Edit Text (T)">I</button>
+      <button class="tool-btn" data-tool="text" title="Add Text (A)">T</button>
+      <button class="tool-btn" data-tool="highlighter" title="Highlight (L)">▆</button>
+      <button class="tool-btn" data-tool="pen" title="Draw (D)">✎</button>
+      <button class="tool-btn" data-tool="eraser" title="Eraser (E)">⌫</button>
+      <button class="tool-btn" data-tool="highlight" title="Highlight area (G)">▢</button>
       <button class="tool-btn" data-tool="rect" title="Rectangle (R)">□</button>
-      <button class="tool-btn" data-tool="ellipse" title="Ellipse (E)">◯</button>
-      <button class="tool-btn" data-tool="line" title="Line (L)">╱</button>
-      <button class="tool-btn" data-tool="arrow" title="Arrow (A)">↗</button>
+      <button class="tool-btn" data-tool="ellipse" title="Ellipse (O)">◯</button>
+      <button class="tool-btn" data-tool="line" title="Line (N)">╱</button>
+      <button class="tool-btn" data-tool="arrow" title="Arrow (W)">↗</button>
     </div>
 
     <span class="tool-sep"></span>
 
     <div class="tool-group">
-      <button class="tool-btn wide premium-tool" id="btn-sign" title="Draw & place a signature">✍ Sign <span class="lock mono">€1</span></button>
-      <button class="tool-btn wide premium-tool" id="btn-image" title="Insert an image">▣ Image <span class="lock mono">€1</span></button>
-    </div>
-
-    <span class="tool-sep"></span>
-
-    <div class="tool-group props">
-      <label class="prop" title="Color">
-        <input type="color" id="prop-color" value="#e8483f">
-      </label>
-      <label class="prop mono" title="Stroke width">
-        <span>w</span>
-        <input type="range" id="prop-width" min="1" max="14" step="1" value="3">
-      </label>
-      <label class="prop mono" title="Font size">
-        <span>aA</span>
-        <input type="number" id="prop-size" min="6" max="96" step="1" value="16">
-      </label>
+      <button class="tool-btn" id="btn-sign" title="Signature (S)">✍</button>
+      <button class="tool-btn" id="btn-stamp" title="Stamp">◉</button>
+      <button class="tool-btn" id="btn-image" title="Insert image">▣</button>
     </div>
 
     <span class="tool-sep"></span>
 
     <div class="tool-group">
-      <button class="tool-btn" id="btn-rotate-l" title="Rotate page left">⟲</button>
-      <button class="tool-btn" id="btn-rotate-r" title="Rotate page right">⟳</button>
-      <button class="tool-btn" id="btn-delete-page" title="Delete current page">🗑</button>
+      <button class="tool-btn" id="btn-rotate-r" title="Rotate clockwise (Ctrl+Shift++)">⟳</button>
+      <button class="tool-btn" id="btn-rotate-l" title="Rotate counter-clockwise (Ctrl+Shift+-)">⟲</button>
+      <button class="tool-btn" id="btn-delete-page" title="Delete page">🗑</button>
+      <button class="tool-btn" id="btn-duplicate-page" title="Duplicate page">⧉</button>
+      <button class="tool-btn" id="btn-extract-page" title="Extract current page">⤴</button>
+    </div>
+
+    <span class="tool-sep"></span>
+
+    <div class="tool-group search-group">
+      <span class="search-wrap">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input type="text" class="search-input" id="search-input" placeholder="Search…" aria-label="Search document">
+      </span>
+      <span class="search-count mono" id="search-count" hidden>0 / 0</span>
+      <button class="tool-btn" id="btn-search-prev" title="Previous match" hidden>↑</button>
+      <button class="tool-btn" id="btn-search-next" title="Next match (Enter)" hidden>↓</button>
+    </div>
+
+    <div class="tool-group tool-right">
+      <button class="tool-btn wide" id="btn-merge" title="Append another PDF">⊕ Merge</button>
+      <button class="tool-btn wide" id="btn-export-png" title="Export current page as PNG">PNG</button>
+      <button class="btn-primary" id="btn-export-pdf" title="Export PDF (Ctrl+S)">⤓ Export PDF</button>
     </div>
   </div>
 
   <!-- ═══════════ WORKSPACE ═══════════ -->
   <div class="workspace">
-    <aside class="thumbs-rail" id="thumbs" aria-label="Pages"></aside>
 
-    <main class="stage" id="stage">
-      <div class="page-wrap" id="page-wrap" hidden>
-        <canvas id="page-canvas"></canvas>
-        <canvas id="overlay-canvas"></canvas>
+    <!-- Left icon rail -->
+    <div class="side-icons" id="side-icons">
+      <button class="sidebar-item is-active" data-panel="pages" title="Thumbnails (F4)">
+        <span class="si-glyph">⊞</span><span class="si-label">Pages</span>
+      </button>
+      <button class="sidebar-item" data-panel="marks" title="Bookmarks">
+        <span class="si-glyph">⚑</span><span class="si-label">Marks</span>
+      </button>
+      <button class="sidebar-item" data-panel="files" title="Attachments">
+        <span class="si-glyph">⎘</span><span class="si-label">Files</span>
+      </button>
+      <button class="sidebar-item" data-panel="notes" title="Annotations">
+        <span class="si-glyph">✎</span><span class="si-label">Notes</span>
+      </button>
+      <div class="si-spacer"></div>
+      <button class="sidebar-item" id="btn-toggle-sidebar" title="Toggle sidebar">
+        <span class="si-glyph" id="sidebar-toggle-glyph">‹</span><span class="si-label">Hide</span>
+      </button>
+    </div>
+
+    <!-- Sidebar content -->
+    <aside class="sidebar" id="sidebar">
+      <div class="panel-content" id="panel-pages-content">
+        <p class="panel-title mono">THUMBNAILS</p>
+        <div class="thumbs" id="thumbs" aria-label="Pages">
+          <p class="panel-empty">No document open</p>
+        </div>
       </div>
 
-      <div class="dropzone" id="dropzone">
-        <div class="dz-star" aria-hidden="true">✦</div>
-        <h1 class="dz-title">Drop a PDF here</h1>
-        <p class="dz-sub">or</p>
-        <button class="dz-btn" id="btn-open-2">Choose a file</button>
-        <p class="dz-fine mono">Processed locally — your file never leaves this device.</p>
+      <div class="panel-content" id="panel-marks-content" hidden>
+        <p class="panel-title mono">BOOKMARKS</p>
+        <div id="bookmarks-list"><p class="panel-empty">No document open</p></div>
+      </div>
+
+      <div class="panel-content" id="panel-files-content" hidden>
+        <p class="panel-title mono">ATTACHMENTS</p>
+        <div id="attachments-list"><p class="panel-empty">No document open</p></div>
+      </div>
+
+      <div class="panel-content" id="panel-notes-content" hidden>
+        <p class="panel-title mono">ANNOTATIONS</p>
+        <div id="annotations-list"><p class="panel-empty">No annotations</p></div>
+      </div>
+
+      <div class="page-tools">
+        <p class="panel-title mono">PAGE TOOLS</p>
+        <div class="pt-grid">
+          <button class="pt-btn" id="btn-insert-before">Insert Before</button>
+          <button class="pt-btn" id="btn-insert-after">Insert After</button>
+          <button class="pt-btn" id="btn-duplicate-page-2">Duplicate</button>
+          <button class="pt-btn" id="btn-delete-page-2">Delete</button>
+          <button class="pt-btn" id="btn-rotate-r-2">Rotate CW</button>
+          <button class="pt-btn" id="btn-rotate-l-2">Rotate CCW</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Canvas stage -->
+    <main class="stage-col">
+      <div class="stage" id="stage">
+        <div class="page-wrap" id="page-wrap" hidden>
+          <canvas id="page-canvas"></canvas>
+          <canvas id="overlay-canvas"></canvas>
+          <div class="inline-layer" id="inline-layer"></div>
+        </div>
+
+        <div class="dropzone" id="dropzone">
+          <div class="dz-mark" aria-hidden="true">✦</div>
+          <h1 class="dz-title">Orion PDF Editor</h1>
+          <p class="dz-sub">Open a PDF to start editing — or drag one here.</p>
+          <div class="dz-actions">
+            <button class="dz-btn" id="btn-open-2">⌸ Open PDF</button>
+            <button class="dz-btn dz-btn-ghost" id="btn-new-blank">＋ New Blank</button>
+          </div>
+          <p class="dz-fine mono">Processed locally — your file never leaves this device.</p>
+        </div>
+      </div>
+
+      <!-- Status bar -->
+      <div class="statusbar">
+        <span id="status-zoom" class="mono">—</span>
+        <span class="sb-sep"></span>
+        <span id="status-pagesize" class="mono">–</span>
+        <span class="sb-sep"></span>
+        <span id="status-tool">Select Tool</span>
+        <span class="sb-flex"></span>
+        <span id="status-msg">Ready</span>
       </div>
     </main>
 
-    <aside class="pro-rail" id="pro-rail">
-      <p class="rail-title mono">PRO TOOLS</p>
+    <!-- Right properties panel -->
+    <aside class="props-rail" id="pro-rail">
+      <div class="props-section">
+        <p class="panel-title mono">TOOL PROPERTIES</p>
 
-      <details class="panel" id="panel-watermark">
-        <summary>◈ Watermark <span class="lock mono">€1</span></summary>
-        <div class="panel-body">
-          <input class="p-input" id="wm-text" type="text" placeholder="CONFIDENTIAL" value="CONFIDENTIAL">
-          <div class="p-row">
-            <input type="color" id="wm-color" value="#8a8a8a" title="Watermark color">
-            <input type="range" id="wm-opacity" min="5" max="60" value="15" title="Opacity %">
+        <p class="prop-label">Color</p>
+        <div class="swatches" id="swatches">
+          <button class="color-swatch" data-color="#111111" style="background:#111111" title="Black"></button>
+          <button class="color-swatch is-active" data-color="#e8483f" style="background:#e8483f" title="Red"></button>
+          <button class="color-swatch" data-color="#f2760c" style="background:#f2760c" title="Orange"></button>
+          <button class="color-swatch" data-color="#e5b800" style="background:#e5b800" title="Yellow"></button>
+          <button class="color-swatch" data-color="#1f9d55" style="background:#1f9d55" title="Green"></button>
+          <button class="color-swatch" data-color="#2563eb" style="background:#2563eb" title="Blue"></button>
+          <button class="color-swatch" data-color="#8b45d8" style="background:#8b45d8" title="Purple"></button>
+          <label class="color-swatch swatch-custom" title="Custom color">
+            <input type="color" id="prop-color" value="#e8483f">
+          </label>
+        </div>
+
+        <p class="prop-label">Stroke width <span class="prop-value mono" id="width-value">3 px</span></p>
+        <input type="range" id="prop-width" min="1" max="16" step="1" value="3">
+
+        <p class="prop-label">Font size <span class="prop-value mono" id="size-value">16 pt</span></p>
+        <input type="range" id="prop-size" min="6" max="96" step="1" value="16">
+
+        <p class="prop-label">Opacity <span class="prop-value mono" id="opacity-value">100%</span></p>
+        <input type="range" id="prop-opacity" min="10" max="100" step="5" value="100">
+
+        <p class="prop-label">Font</p>
+        <select class="p-input" id="prop-font">
+          <option value="Helvetica">Helvetica</option>
+          <option value="TimesRoman">Times Roman</option>
+          <option value="Courier">Courier</option>
+        </select>
+      </div>
+
+      <div class="props-section">
+        <p class="panel-title mono">DOCUMENT INFO</p>
+        <div class="info-row"><span>Pages</span><span id="info-pages">–</span></div>
+        <div class="info-row"><span>Size</span><span id="info-size">–</span></div>
+        <div class="info-row"><span>Title</span><span id="info-title">–</span></div>
+        <div class="info-row"><span>Author</span><span id="info-author">–</span></div>
+      </div>
+
+      <div class="props-section">
+        <p class="panel-title mono">PRO TOOLS</p>
+
+        <details class="panel" id="panel-watermark">
+          <summary>◈ Watermark <span class="lock mono">€1</span></summary>
+          <div class="panel-body">
+            <input class="p-input" id="wm-text" type="text" placeholder="CONFIDENTIAL" value="CONFIDENTIAL">
+            <div class="p-row">
+              <input type="color" id="wm-color" value="#8a8a8a" title="Watermark color">
+              <input type="range" id="wm-opacity" min="5" max="60" value="15" title="Opacity %">
+            </div>
+            <button class="p-btn premium-action" id="btn-watermark">Stamp all pages</button>
           </div>
-          <button class="p-btn premium-action" id="btn-watermark">Stamp all pages</button>
-        </div>
-      </details>
+        </details>
 
-      <details class="panel" id="panel-numbers">
-        <summary>№ Page numbers <span class="lock mono">€1</span></summary>
-        <div class="panel-body">
-          <select class="p-input" id="pn-format">
-            <option value="{n} / {total}">1 / 12</option>
-            <option value="Page {n} of {total}">Page 1 of 12</option>
-            <option value="{n}">1</option>
-            <option value="— {n} —">— 1 —</option>
-          </select>
-          <button class="p-btn premium-action" id="btn-numbers">Number all pages</button>
-        </div>
-      </details>
-
-      <details class="panel" id="panel-extract">
-        <summary>✂ Extract pages <span class="lock mono">€1</span></summary>
-        <div class="panel-body">
-          <input class="p-input mono" id="ex-range" type="text" placeholder="e.g. 1-3, 5">
-          <button class="p-btn premium-action" id="btn-extract">Extract to new PDF</button>
-        </div>
-      </details>
-
-      <details class="panel" id="panel-forms">
-        <summary>☰ Fill forms <span class="lock mono">€1</span></summary>
-        <div class="panel-body">
-          <div id="form-fields" class="form-fields">
-            <p class="p-hint">Open the panel to scan for form fields.</p>
+        <details class="panel" id="panel-numbers">
+          <summary>№ Page numbers <span class="lock mono">€1</span></summary>
+          <div class="panel-body">
+            <select class="p-input" id="pn-format">
+              <option value="{n} / {total}">1 / 12</option>
+              <option value="Page {n} of {total}">Page 1 of 12</option>
+              <option value="{n}">1</option>
+              <option value="— {n} —">— 1 —</option>
+            </select>
+            <button class="p-btn premium-action" id="btn-numbers">Number all pages</button>
           </div>
-          <button class="p-btn premium-action" id="btn-forms-apply" hidden>Apply values</button>
-        </div>
-      </details>
+        </details>
 
-      <details class="panel" id="panel-meta">
-        <summary>⚙ Metadata <span class="lock mono">€1</span></summary>
-        <div class="panel-body">
-          <input class="p-input" id="md-title" type="text" placeholder="Title">
-          <input class="p-input" id="md-author" type="text" placeholder="Author">
-          <input class="p-input" id="md-subject" type="text" placeholder="Subject">
-          <input class="p-input" id="md-keywords" type="text" placeholder="Keywords, comma, separated">
-          <button class="p-btn premium-action" id="btn-meta">Save metadata</button>
-        </div>
-      </details>
+        <details class="panel" id="panel-extract">
+          <summary>✂ Extract pages <span class="lock mono">€1</span></summary>
+          <div class="panel-body">
+            <input class="p-input mono" id="ex-range" type="text" placeholder="e.g. 1-3, 5">
+            <button class="p-btn premium-action" id="btn-extract">Extract to new PDF</button>
+          </div>
+        </details>
 
-      <details class="panel" id="panel-optimize">
-        <summary>◉ Optimize <span class="lock mono">€1</span></summary>
-        <div class="panel-body">
-          <p class="p-hint">Rewrites the file structure and drops dead objects. Lossless.</p>
-          <button class="p-btn premium-action" id="btn-optimize">Optimize file</button>
-          <p class="p-hint" id="opt-result"></p>
-        </div>
-      </details>
+        <details class="panel" id="panel-forms">
+          <summary>☰ Fill forms <span class="lock mono">€1</span></summary>
+          <div class="panel-body">
+            <div id="form-fields" class="form-fields">
+              <p class="p-hint">Open the panel to scan for form fields.</p>
+            </div>
+            <button class="p-btn premium-action" id="btn-forms-apply" hidden>Apply values</button>
+          </div>
+        </details>
+
+        <details class="panel" id="panel-meta">
+          <summary>⚙ Metadata <span class="lock mono">€1</span></summary>
+          <div class="panel-body">
+            <input class="p-input" id="md-title" type="text" placeholder="Title">
+            <input class="p-input" id="md-author" type="text" placeholder="Author">
+            <input class="p-input" id="md-subject" type="text" placeholder="Subject">
+            <input class="p-input" id="md-keywords" type="text" placeholder="Keywords, comma, separated">
+            <button class="p-btn premium-action" id="btn-meta">Save metadata</button>
+          </div>
+        </details>
+
+        <details class="panel" id="panel-optimize">
+          <summary>◉ Optimize <span class="lock mono">€1</span></summary>
+          <div class="panel-body">
+            <p class="p-hint">Rewrites the file structure and drops dead objects. Lossless.</p>
+            <button class="p-btn premium-action" id="btn-optimize">Optimize file</button>
+            <p class="p-hint" id="opt-result"></p>
+          </div>
+        </details>
+      </div>
+
+      <div class="props-section">
+        <p class="panel-title mono">ACTIONS</p>
+        <button class="pt-btn pt-wide" id="btn-flatten">⧈ Flatten &amp; Export</button>
+        <button class="pt-btn pt-wide" id="btn-clear-annots">🗑 Clear All Annotations</button>
+        <button class="pt-btn pt-wide" data-action="properties">ⓘ Properties…</button>
+      </div>
 
       <div class="rail-upsell" id="rail-upsell">
-        <p><strong>Everything above: €1.</strong></p>
+        <p><strong>Everything here: €1.</strong></p>
         <p class="muted">One euro a month. All pro tools. No badge on exports.</p>
         <button class="p-btn p-btn-gold" id="btn-upsell">Unlock Premium · €1</button>
       </div>
     </aside>
+  </div>
+
+  <!-- Context menu -->
+  <div class="context-menu" id="context-menu" hidden></div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loading-overlay" hidden>
+    <div class="spinner"></div>
+    <p id="loading-text">Working…</p>
   </div>
 
   <!-- ═══════════ MODALS ═══════════ -->
@@ -193,26 +470,12 @@
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="up-title">
       <button class="modal-x js-close" type="button" aria-label="Close">×</button>
       <h3 class="modal-title" id="up-title">Premium · <span class="gold">€1</span></h3>
-      <p class="modal-sub" id="up-reason">This tool is part of Premium — one euro, everything unlocked.</p>
+      <p class="modal-sub" id="up-reason">Premium is €1 — unlimited documents, every tool, no badge.</p>
       <button class="p-btn p-btn-gold" id="btn-buy-now">Get Premium · €1</button>
       <div class="up-divider mono">or activate a key</div>
       <input class="p-input mono" id="up-key" type="text" placeholder="ORION-XXXXX-XXXXX-XXXXX" autocomplete="off" spellcheck="false">
       <p class="modal-error" id="up-error" hidden>That key doesn't validate — check for typos.</p>
       <button class="p-btn" id="btn-activate-key">Activate key</button>
-    </div>
-  </div>
-
-  <!-- Text annotation -->
-  <div class="modal-backdrop" id="modal-text" hidden>
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tx-title">
-      <button class="modal-x js-close" type="button" aria-label="Close">×</button>
-      <h3 class="modal-title" id="tx-title">Text</h3>
-      <textarea class="p-input" id="tx-value" rows="3" placeholder="Type your text…"></textarea>
-      <div class="p-row">
-        <label class="mono">size <input class="p-input p-input-s" id="tx-size" type="number" min="6" max="96" value="16"></label>
-        <input type="color" id="tx-color" value="#e8483f" title="Text color">
-      </div>
-      <button class="p-btn p-btn-gold" id="tx-ok">Place text</button>
     </div>
   </div>
 
@@ -231,7 +494,163 @@
         </label>
         <button class="p-btn p-btn-s" id="sg-clear">Clear</button>
       </div>
-      <button class="p-btn p-btn-gold" id="sg-ok">Use signature → click the page to place</button>
+      <button class="p-btn p-btn-accent" id="sg-ok">Use signature → click the page to place</button>
+    </div>
+  </div>
+
+  <!-- Stamp picker -->
+  <div class="modal-backdrop" id="modal-stamp" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="st-title">
+      <button class="modal-x js-close" type="button" aria-label="Close">×</button>
+      <h3 class="modal-title" id="st-title">Stamp</h3>
+      <p class="modal-sub">Pick a stamp, then click the page to place it.</p>
+      <div class="stamp-grid" id="stamp-grid">
+        <button class="stamp-opt stamp-green" data-stamp="APPROVED">APPROVED</button>
+        <button class="stamp-opt stamp-red" data-stamp="REJECTED">REJECTED</button>
+        <button class="stamp-opt stamp-blue" data-stamp="DRAFT">DRAFT</button>
+        <button class="stamp-opt stamp-red" data-stamp="CONFIDENTIAL">CONFIDENTIAL</button>
+        <button class="stamp-opt stamp-blue" data-stamp="REVIEWED">REVIEWED</button>
+        <button class="stamp-opt stamp-green" data-stamp="SIGN HERE">SIGN HERE</button>
+      </div>
+      <label class="mono st-custom-label">or custom
+        <input class="p-input" id="stamp-custom" type="text" maxlength="24" placeholder="Custom stamp text">
+      </label>
+      <button class="p-btn p-btn-accent" id="stamp-custom-ok">Use custom stamp</button>
+    </div>
+  </div>
+
+  <!-- Find & Replace -->
+  <div class="modal-backdrop" id="modal-replace" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="fr-title">
+      <button class="modal-x js-close" type="button" aria-label="Close">×</button>
+      <h3 class="modal-title" id="fr-title">Find &amp; Replace</h3>
+      <p class="modal-sub">Replaces by covering the original text and typing over it.</p>
+      <input class="p-input" id="fr-find" type="text" placeholder="Find…">
+      <input class="p-input" id="fr-replace" type="text" placeholder="Replace with…">
+      <p class="p-hint" id="fr-status"></p>
+      <div class="p-row">
+        <button class="p-btn p-btn-s" id="fr-find-next">Find next</button>
+        <button class="p-btn p-btn-s" id="fr-replace-one">Replace</button>
+        <button class="p-btn p-btn-s p-btn-accent" id="fr-replace-all">Replace all</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preferences -->
+  <div class="modal-backdrop" id="modal-prefs" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pf-title">
+      <button class="modal-x js-close" type="button" aria-label="Close">×</button>
+      <h3 class="modal-title" id="pf-title">Preferences</h3>
+      <p class="prop-label">Default tool color</p>
+      <input type="color" id="pf-color" value="#e8483f">
+      <p class="prop-label">Default font size</p>
+      <input class="p-input p-input-s" id="pf-size" type="number" min="6" max="96" value="16">
+      <p class="prop-label">Default font</p>
+      <select class="p-input" id="pf-font">
+        <option value="Helvetica">Helvetica</option>
+        <option value="TimesRoman">Times Roman</option>
+        <option value="Courier">Courier</option>
+      </select>
+      <p class="prop-label">Author name (used in metadata)</p>
+      <input class="p-input" id="pf-author" type="text" placeholder="Your name">
+      <button class="p-btn p-btn-accent" id="pf-save">Save preferences</button>
+    </div>
+  </div>
+
+  <!-- Document properties -->
+  <div class="modal-backdrop" id="modal-props" hidden>
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="pr-title">
+      <button class="modal-x js-close" type="button" aria-label="Close">×</button>
+      <h3 class="modal-title" id="pr-title">Document Properties</h3>
+      <div class="props-grid" id="props-grid"></div>
+      <button class="p-btn js-close">Close</button>
+    </div>
+  </div>
+
+  <!-- Encrypt (roadmap) -->
+  <div class="modal-backdrop" id="modal-encrypt" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="en-title">
+      <button class="modal-x js-close" type="button" aria-label="Close">×</button>
+      <h3 class="modal-title" id="en-title">Encrypt PDF</h3>
+      <p class="modal-sub">Password protection is on the roadmap.</p>
+      <p class="p-hint">
+        Orion runs 100% in your browser, and the PDF engine it ships with
+        (pdf-lib) cannot yet produce properly encrypted files. Rather than hand
+        you a file that only <em>looks</em> protected, this feature stays off
+        until it can be done right. Planned for v1.1 with AES-256.
+      </p>
+      <button class="p-btn js-close">Understood</button>
+    </div>
+  </div>
+
+  <!-- Documentation -->
+  <div class="modal-backdrop" id="modal-docs" hidden>
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="dc-title">
+      <button class="modal-x js-close" type="button" aria-label="Close">×</button>
+      <h3 class="modal-title" id="dc-title">Documentation</h3>
+      <div class="docs-body">
+        <p><strong>Open</strong> a PDF (File → Open, Ctrl+O, or drag &amp; drop). Your first 2 documents are full-featured free tries; Premium (€1) makes it unlimited.</p>
+        <p><strong>Annotate</strong> with the toolbar: text, highlight, draw, shapes, arrows. Select (V) to move things; double-click text to edit it in place; Eraser (E) or Delete removes.</p>
+        <p><strong>Add Text</strong> (A): a box follows your cursor — click to anchor it, type directly on the page, drag the dotted border to move it. Enter commits (Ctrl+Enter for multi-line).</p>
+        <p><strong>Edit Text</strong> (T) shows dotted boxes around the page's text — click one and retype it right on the page. <strong>Select Text</strong> (I) drag-selects page text for copying (Ctrl+C). <strong>Find &amp; Replace</strong> (Ctrl+H) rewrites across the document.</p>
+        <p><strong>Organize</strong>: drag thumbnails to reorder; rotate, delete, duplicate, insert and extract pages from the toolbar, sidebar or right-click menu.</p>
+        <p><strong>Sign &amp; Stamp</strong>: draw a signature (S) or place an APPROVED/DRAFT stamp, then click the page.</p>
+        <p><strong>Export</strong> (Ctrl+S) burns everything into a real PDF — nothing ever leaves your device.</p>
+      </div>
+      <button class="p-btn js-close">Close</button>
+    </div>
+  </div>
+
+  <!-- Keyboard shortcuts -->
+  <div class="modal-backdrop" id="modal-shortcuts" hidden>
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="ks-title">
+      <button class="modal-x js-close" type="button" aria-label="Close">×</button>
+      <h3 class="modal-title" id="ks-title">Keyboard Shortcuts</h3>
+      <div class="shortcuts-grid">
+        <div class="sc-row"><span>Open</span><span class="mono">Ctrl+O</span></div>
+        <div class="sc-row"><span>Save / Export</span><span class="mono">Ctrl+S</span></div>
+        <div class="sc-row"><span>Print</span><span class="mono">Ctrl+P</span></div>
+        <div class="sc-row"><span>Undo / Redo</span><span class="mono">Ctrl+Z / Y</span></div>
+        <div class="sc-row"><span>Find</span><span class="mono">Ctrl+F</span></div>
+        <div class="sc-row"><span>Find &amp; Replace</span><span class="mono">Ctrl+H</span></div>
+        <div class="sc-row"><span>Select All</span><span class="mono">Ctrl+A</span></div>
+        <div class="sc-row"><span>Properties</span><span class="mono">Ctrl+D</span></div>
+        <div class="sc-row"><span>Preferences</span><span class="mono">Ctrl+K</span></div>
+        <div class="sc-row"><span>Zoom In / Out</span><span class="mono">Ctrl++ / −</span></div>
+        <div class="sc-row"><span>Actual Size</span><span class="mono">Ctrl+1</span></div>
+        <div class="sc-row"><span>Fit Width / Page</span><span class="mono">Ctrl+2 / 0</span></div>
+        <div class="sc-row"><span>Select Tool</span><span class="mono">V</span></div>
+        <div class="sc-row"><span>Select Text</span><span class="mono">I</span></div>
+        <div class="sc-row"><span>Hand Tool</span><span class="mono">H</span></div>
+        <div class="sc-row"><span>Edit Text</span><span class="mono">T</span></div>
+        <div class="sc-row"><span>Add Text</span><span class="mono">A</span></div>
+        <div class="sc-row"><span>Highlight</span><span class="mono">L</span></div>
+        <div class="sc-row"><span>Draw</span><span class="mono">D</span></div>
+        <div class="sc-row"><span>Eraser</span><span class="mono">E</span></div>
+        <div class="sc-row"><span>Signature</span><span class="mono">S</span></div>
+        <div class="sc-row"><span>Shapes</span><span class="mono">R / O / N / W / G</span></div>
+        <div class="sc-row"><span>Prev / Next Page</span><span class="mono">PgUp / PgDn</span></div>
+        <div class="sc-row"><span>Delete Selection</span><span class="mono">Del</span></div>
+        <div class="sc-row"><span>Thumbnails Panel</span><span class="mono">F4</span></div>
+        <div class="sc-row"><span>Documentation</span><span class="mono">F1</span></div>
+        <div class="sc-row"><span>Full Screen</span><span class="mono">F11</span></div>
+      </div>
+      <button class="p-btn js-close">Close</button>
+    </div>
+  </div>
+
+  <!-- About -->
+  <div class="modal-backdrop" id="modal-about" hidden>
+    <div class="modal modal-center" role="dialog" aria-modal="true" aria-labelledby="ab-title">
+      <button class="modal-x js-close" type="button" aria-label="Close">×</button>
+      <div class="about-mark" aria-hidden="true">✦</div>
+      <h3 class="modal-title" id="ab-title">Orion PDF Editor</h3>
+      <p class="modal-sub" id="about-version">Version 1.0 — the €1 PDF editor</p>
+      <p class="p-hint">Runs entirely in your browser with pdf.js and pdf-lib. No uploads, no accounts, no tracking — your documents never leave your machine.</p>
+      <div class="about-badges mono">
+        <span>pdf.js 3.11</span><span>pdf-lib 1.17</span><span>0 servers</span>
+      </div>
+      <button class="p-btn js-close">Close</button>
     </div>
   </div>
 

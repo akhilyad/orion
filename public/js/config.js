@@ -8,7 +8,7 @@ window.ORION_CONFIG = {
 
   pricing: {
     // Bucketized pricing model. Premium is €1 — that is the whole pitch.
-    free: { label: 'Stargazer', price: '€0', period: 'forever' },
+    free: { label: 'Stargazer', price: '€0', period: '2 free tries' },
     premium: { label: 'Premium', price: '€1', period: '/month' },
     enterprise: { label: 'Enterprise', price: '€79', period: '/year · 10 seats' },
   },
@@ -16,8 +16,8 @@ window.ORION_CONFIG = {
   /**
    * Payment link for Premium (€1). Create a Stripe Payment Link
    * (or Paddle / Lemon Squeezy checkout URL) and paste it here.
-   * While empty, the Buy button opens the activation modal instead,
-   * with instructions — nothing breaks.
+   * While empty, checkout buttons show a toast with instructions
+   * instead — nothing breaks.
    */
   premiumPaymentLink: 'https://buy.stripe.com/test_14AcN69DS1zR9uxbXu9ws00',
 
@@ -25,8 +25,8 @@ window.ORION_CONFIG = {
   salesEmail: 'sales@orion-pdf.example',
   supportEmail: 'support@orion-pdf.example',
 
-  /** Free-tier limits (enforced client-side). */
+  /** Free-trial limits (enforced client-side). */
   limits: {
-    freeMergeFiles: 1, // extra files merged per document on Free
+    freeTries: 2, // documents a visitor can open with full tools before the €1 ask
   },
 };

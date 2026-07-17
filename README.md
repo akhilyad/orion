@@ -17,26 +17,53 @@ major platform.
 
 ## Features
 
-### Stargazer (Free — €0)
-- Open, view, zoom, and navigate PDFs of any size
-- Annotate: text, pen, highlighter, area highlight, rectangle, ellipse, line, arrow
-- Move, edit, and delete annotations; full undo/redo
-- Rotate, delete, and drag-to-reorder pages (thumbnail rail)
-- Merge **1** extra PDF per document
-- Export to PDF (with a small "Made with Orion" badge) and PNG
-- Keyboard shortcuts throughout (V/T/P/H/R/E/L/A tools, Ctrl+Z/Y, Ctrl+S, arrows, +/−)
+### Stargazer (Free trial — €0, 2 documents)
+The landing page loads with no gate, and the editor opens freely. A visitor's
+first **2 documents** get the full toolset — every Premium feature works
+during a try, so people experience the real product. When they open a third
+document, the editor shows the upgrade popup (buy €1 / activate a key).
+The try counter lives in `localStorage` (`orion.trial.v1`); the limit is
+`limits.freeTries` in `public/js/config.js`.
+- Everything below, unlocked, for 2 documents — no sign-up
+- Exports carry a small "Made with Orion" badge until Premium
+- Full keyboard map (see the in-app **Help → Keyboard Shortcuts** dialog)
 
-### Premium (€1 / month) — the hero bucket
-Everything in Stargazer, plus:
+### The editor
+A desktop-class shell: **File / Edit / View / Tools / Help menu bar** with
+shortcuts, a main toolbar, a left icon rail (Pages · Marks · Files · Notes
+panels), a right properties rail (colors, stroke, opacity, font), a status
+bar, and a right-click context menu.
+
+- Open, view, zoom (Fit Width / Fit Page / manual), and navigate PDFs of any size
+- **Find** (Ctrl+F) with highlighted matches and prev/next stepping
+- **Edit Text** (T) — dotted boxes outline the page's text; click one and retype
+  it inline, right on the page (rotation-aware); drag the border to move the block
+- **Select Text** (I) — drag over page text to select it live, Ctrl+C to copy
+- **Add Text** (A) — a box rides the cursor; click to anchor, type directly on
+  the page, drag the dotted border to reposition
+- **Find & Replace** (Ctrl+H) — one-by-one or replace-all across the document
+- Annotate: text, pen, highlighter, area highlight, rectangle, ellipse, line, arrow
+- **Hand tool** (H) to pan, **Eraser** (E) to remove marks under the cursor
+- Move, edit (double-click, inline), and delete annotations; select all / cut /
+  copy / paste; full undo/redo
+- Per-annotation **color, stroke width, opacity, and font family**
+- Rotate, delete, **duplicate**, **insert blank**, and drag-to-reorder pages
 - ✍ **Signatures** — draw and place, exported as vector-quality PNG with transparency
+- ⬛ **Stamps** — APPROVED / REJECTED / DRAFT / CONFIDENTIAL / REVIEWED / custom text
 - ▣ **Insert images** — PNG, JPEG, WebP (auto-transcoded)
+- 🖨 **Print** (Ctrl+P) — annotations burned in, straight to the browser print dialog
 - ◈ **Watermarks** — diagonal stamp across every page, rotation-aware
 - № **Page numbers** — four formats, bottom-centred on every page
 - ✂ **Extract pages** — pull ranges (`1-3, 5`) into a new PDF, annotations included
 - ☰ **Form filling** — text, checkbox, dropdown, radio; values written into the file
-- ⚙ **Metadata editing** — title, author, subject, keywords
+- ⚙ **Metadata editing** + **Document Properties** (Ctrl+D) viewer
+- ◫ **Bookmarks & attachments** panels — outline navigation, embedded-file download
 - ◉ **Lossless optimization** — object-stream rewrite, only applied if it shrinks the file
-- **Unlimited merging** and **no badge** on exports
+- Preferences (Ctrl+K): default color, font size, font family, author name
+
+### Premium (€1 / month) — the hero bucket
+Everything above without the 2-document limit, plus **no badge** on exports,
+unlimited **merging**, **extract pages**, and **replace-all**.
 
 ### Enterprise (€79 / year · 10 seats)
 Same software; you sell volume keys + priority email support. Leads go to
@@ -115,15 +142,17 @@ orion/
 │   ├── css/  site.css, editor.css
 │   ├── js/
 │   │   ├── config.js       # pricing, payment link, limits — edit before launch
-│   │   ├── license.js      # key validation + localStorage activation
+│   │   ├── license.js      # key validation + trial counter + localStorage activation
 │   │   ├── landing.js      # constellation canvas, modals
 │   │   └── editor/
 │   │       ├── main.js     # entry, vendor checks
 │   │       ├── state.js    # shared state, event bus, undo/redo history
-│   │       ├── viewer.js   # pdf.js rendering, thumbnails, zoom, coordinates
-│   │       ├── annots.js   # annotation overlay: draw, hit-test, move, edit
+│   │       ├── viewer.js   # pdf.js rendering, thumbnails, zoom modes, coordinates
+│   │       ├── annots.js   # annotation overlay: draw, hit-test, move, edit, clipboard
 │   │       ├── docops.js   # pdf-lib: rotate/reorder/merge/watermark/forms/export
-│   │       └── ui.js       # all DOM wiring, modals, shortcuts, premium gate
+│   │       ├── features.js # search, find & replace, text-line engine, print, stamps, bookmarks
+│   │       ├── inline.js   # inline WYSIWYG text editing (add/edit/select)
+│   │       └── ui.js       # menu bar, panels, modals, shortcuts, trial + premium gate
 │   ├── vendor/             # pdf.js 3.11.174 + pdf-lib 1.17.1 (committed)
 │   └── assets/favicon.svg
 ```
@@ -157,12 +186,15 @@ Key design decisions:
 
 ## Honest limits
 
-- Password-protected/encrypted PDFs can't be opened (a clear error is shown).
-- Existing PDF text can't be reflowed/retyped (that's true of most editors —
-  Orion adds content on top; it doesn't re-typeset the original).
+- Password-protected/encrypted PDFs can't be opened (a clear error is shown),
+  and Orion can't *add* encryption yet — pdf-lib has no encryption support,
+  so the Tools → Encrypt menu explains this honestly instead of faking it.
+- "Edit Text" and "Find & Replace" work by **covering and retyping** — a white
+  patch over the original run plus new text in a standard font. The original
+  glyphs stay in the file underneath; text is not re-typeset or reflowed.
 - Very large PDFs (500 MB+) are constrained by browser memory.
-- Free-tier limits are enforced client-side, consistent with the license
-  model above.
+- The 2-try trial counter is enforced client-side (`localStorage`),
+  consistent with the license model above.
 
 ## Scripts
 

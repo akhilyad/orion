@@ -68,9 +68,9 @@
       // Background stars (twinkle).
       for (var i = 0; i < stars.length; i++) {
         var s = stars[i];
-        var a = reduceMotion ? 0.5 : 0.28 + 0.42 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
+        var a = reduceMotion ? 0.4 : 0.18 + 0.32 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
         ctx.globalAlpha = a;
-        ctx.fillStyle = '#ede7d9';
+        ctx.fillStyle = '#8b93a7';
         ctx.beginPath();
         ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
         ctx.fill();
@@ -85,8 +85,8 @@
       function px(p) { return { x: cx - cw / 2 + p.x * cw, y: cy + p.y * ch }; }
 
       // Hairline links.
-      ctx.globalAlpha = 0.28;
-      ctx.strokeStyle = '#f0b34e';
+      ctx.globalAlpha = 0.4;
+      ctx.strokeStyle = '#c98d2a';
       ctx.lineWidth = 0.7;
       ctx.beginPath();
       for (var l = 0; l < LINKS.length; l++) {
@@ -102,14 +102,14 @@
         var p = px(ORION[k]);
         var pulse = reduceMotion ? 1 : 1 + 0.18 * Math.sin(t * 1.3 + k * 1.7);
         var grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, ORION[k].r * 7);
-        grad.addColorStop(0, 'rgba(240,179,78,0.85)');
+        grad.addColorStop(0, 'rgba(240,179,78,0.65)');
         grad.addColorStop(1, 'rgba(240,179,78,0)');
         ctx.globalAlpha = 0.9;
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(p.x, p.y, ORION[k].r * 7, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#ffe9c4';
+        ctx.fillStyle = '#b07818';
         ctx.beginPath();
         ctx.arc(p.x, p.y, ORION[k].r * pulse, 0, Math.PI * 2);
         ctx.fill();
@@ -154,11 +154,18 @@
     if (t.closest('.js-buy')) {
       e.preventDefault();
       closeModals();
+      var pricing = document.getElementById('pricing');
+      if (pricing) pricing.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+      return;
+    }
+    if (t.closest('.js-checkout')) {
+      e.preventDefault();
+      closeModals();
       var link = (CFG.premiumPaymentLink || '').trim();
       if (link) {
         window.open(link, '_blank', 'noopener');
       } else {
-        openModal('modal-buy');
+        toast('Checkout isn’t configured yet — set premiumPaymentLink in js/config.js.');
       }
       return;
     }
@@ -205,7 +212,7 @@
     document.querySelectorAll('.js-activate').forEach(function (b) {
       b.textContent = '✦ Premium active';
     });
-    document.querySelectorAll('.js-buy').forEach(function (b) {
+    document.querySelectorAll('.js-buy, .js-checkout').forEach(function (b) {
       if (b.classList.contains('btn-inline')) return;
       b.textContent = '✦ Premium active';
       b.disabled = true;
