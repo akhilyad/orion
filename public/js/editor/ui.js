@@ -55,15 +55,11 @@ function anyModalOpen() {
   return Array.from(document.querySelectorAll('.modal-backdrop')).some((m) => !m.hidden);
 }
 
-/* Free-trial session state: a document opened on a free try unlocks
- * every tool for that document. Opening counts the try (see openDocument). */
+/* Free-trial session state: a document opened on the free try gets the
+ * core toolset (view, annotate, pages). Premium tools stay locked — the
+ * trial never unlocks them. Opening counts the try (see openDocument). */
 let trialSessionActive = false;
 let pendingTrialSource = null; // { file } | { bytes, name } stashed at the gate
-
-/** Premium, or working on a document opened during a free try. */
-function hasAccess() {
-  return isPremium() || trialSessionActive;
-}
 
 function showUpgrade(reason) {
   $('up-reason').textContent = reason || 'Premium is €1 — unlimited documents, every tool, no badge.';
@@ -71,9 +67,10 @@ function showUpgrade(reason) {
   openModal('modal-upgrade');
 }
 
-/** Access gate: true if allowed, else opens the upgrade modal. */
+/** Premium-only gate: true if Premium is active, else opens the upgrade
+ * modal. The free trial does NOT pass this gate. */
 function requirePremium(reason) {
-  if (hasAccess()) return true;
+  if (isPremium()) return true;
   showUpgrade(reason);
   return false;
 }
@@ -149,6 +146,10 @@ function syncToolButtons() {
 }
 
 function setTool(t) {
+  if (t === 'edittext' &&
+      !requirePremium('Editing PDF text is a Premium tool — €1 unlocks everything.')) {
+    return;
+  }
   if (t !== 'place') S.pendingImage = null;
   const prev = S.tool;
   S.tool = t;
@@ -182,10 +183,8 @@ function reflectLicense() {
         : 'Trial over · Unlock €1';
     }
     chip.classList.remove('is-premium');
-    // Tools are unlocked while a free-try document is open.
-    if (hasAccess()) {
-      document.querySelectorAll('.lock').forEach((el) => { el.hidden = true; });
-    }
+    // Premium tools stay locked during the trial — show the lock badges.
+    document.querySelectorAll('.lock').forEach((el) => { el.hidden = false; });
   }
 }
 

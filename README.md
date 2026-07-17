@@ -17,14 +17,16 @@ major platform.
 
 ## Features
 
-### Stargazer (Free trial — €0, 2 documents)
+### Stargazer (Free trial — €0, 1 document)
 The landing page loads with no gate, and the editor opens freely. A visitor's
-first **2 documents** get the full toolset — every Premium feature works
-during a try, so people experience the real product. When they open a third
-document, the editor shows the upgrade popup (buy €1 / activate a key).
-The try counter lives in `localStorage` (`orion.trial.v1`); the limit is
-`limits.freeTries` in `public/js/config.js`.
-- Everything below, unlocked, for 2 documents — no sign-up
+first **document** gets the core toolset — viewing, zooming, find, annotations
+(text, pen, shapes, highlight), and page organization. Premium tools (text
+editing, find & replace, signatures, stamps, watermarks, page numbers, forms,
+merging, extraction, metadata, optimize, badge-free export) stay locked during
+the trial. When they open a second document, the editor shows the upgrade
+popup (buy €1 / activate a key). The try counter lives in `localStorage`
+(`orion.trial.v1`); the limit is `limits.freeTries` in `public/js/config.js`.
+- Core tools for 1 document — no sign-up
 - Exports carry a small "Made with Orion" badge until Premium
 - Full keyboard map (see the in-app **Help → Keyboard Shortcuts** dialog)
 
@@ -62,8 +64,10 @@ bar, and a right-click context menu.
 - Preferences (Ctrl+K): default color, font size, font family, author name
 
 ### Premium (€1 / month) — the hero bucket
-Everything above without the 2-document limit, plus **no badge** on exports,
-unlimited **merging**, **extract pages**, and **replace-all**.
+Everything above with no document limit, and every premium tool unlocked:
+text editing, find & replace, e-signatures, stamps, watermarks, page numbers,
+form filling, merging, page extraction, metadata editing, lossless optimize,
+and **badge-free** exports.
 
 ### Enterprise (€79 / year · 10 seats)
 Same software; you sell volume keys + priority email support. Leads go to

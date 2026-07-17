@@ -8,7 +8,7 @@ window.ORION_CONFIG = {
 
   pricing: {
     // Bucketized pricing model. Premium is €1 — that is the whole pitch.
-    free: { label: 'Stargazer', price: '€0', period: '2 free tries' },
+    free: { label: 'Stargazer', price: '€0', period: '1 free try' },
     premium: { label: 'Premium', price: '€1', period: '/month' },
     enterprise: { label: 'Enterprise', price: '€79', period: '/year · 10 seats' },
   },
@@ -27,6 +27,6 @@ window.ORION_CONFIG = {
 
   /** Free-trial limits (enforced client-side). */
   limits: {
-    freeTries: 2, // documents a visitor can open with full tools before the €1 ask
+    freeTries: 1, // documents a visitor can open (core tools only) before the €1 ask
   },
 };
