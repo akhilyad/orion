@@ -3,7 +3,7 @@
  * Edit this file before launch. No build step required.
  */
 window.ORION_CONFIG = {
-  productName: 'Orion',
+  productName: 'OrionPDF',
   version: '1.0.0',
 
   pricing: {

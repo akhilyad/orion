@@ -415,7 +415,7 @@ async function burnAnnotations(doc, { badge }) {
     }
 
     if (badge) {
-      const label = 'Made with Orion · the €1 PDF editor';
+      const label = 'Made with OrionPDF · the €1 PDF editor';
       const p = g.toPdf(10, g.vh - 7);
       page.drawText(label, {
         x: p.x, y: p.y, size: 7, font: baseFont,

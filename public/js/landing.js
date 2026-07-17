@@ -173,7 +173,7 @@
       e.preventDefault();
       window.location.href =
         'mailto:' + (CFG.salesEmail || 'sales@example.com') +
-        '?subject=' + encodeURIComponent('Orion Enterprise — 10 seats');
+        '?subject=' + encodeURIComponent('OrionPDF Enterprise — 10 seats');
       return;
     }
   });
