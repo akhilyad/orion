@@ -1,6 +1,6 @@
 {
   "name": "orion-pdf-editor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Orion — the premium PDF editor that costs 1 euro. Client-side, private, enterprise-grade.",
   "main": "server.js",
   "bin": {
@@ -43,6 +43,7 @@
     "pdfjs-dist": "3.11.174"
   },
   "dependencies": {
-    "firebase": "^12.16.0"
+    "firebase": "^12.16.0",
+    "orion-pdf-editor": "^1.0.0"
   }
 }
