@@ -1,0 +1,13 @@
+name = "orion-entitlements"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+[vars]
+FIREBASE_PROJECT_ID = "orionpdf-e74a9"
+
+# Create the namespace once with:
+#   npx wrangler kv namespace create ENTITLEMENTS
+# then paste the id it prints below.
+[[kv_namespaces]]
+binding = "ENTITLEMENTS"
+id = "PASTE_KV_NAMESPACE_ID_HERE"

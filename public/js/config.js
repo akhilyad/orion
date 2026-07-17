@@ -41,6 +41,15 @@ window.ORION_CONFIG = {
     appId: '1:420218743001:web:8fd56ec838eb18c77836c8',
   },
 
+  /**
+   * Entitlement API — the free (Cloudflare Worker) alternative to the
+   * Firebase Cloud Function. Deploy worker/ with wrangler and paste the
+   * worker URL here, e.g. 'https://orion-entitlements.<you>.workers.dev'.
+   * While empty, auth.js falls back to reading Firestore directly
+   * (which requires the Blaze-plan Cloud Function to have written it).
+   */
+  entitlementApi: '',
+
   /** Free-trial limits (enforced client-side). */
   limits: {
     freeTries: 1, // documents a visitor can open (core tools only) before the €1 ask

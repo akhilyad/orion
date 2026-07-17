@@ -88,6 +88,20 @@
         // Phone-only accounts have no email to match a Stripe purchase.
         return Promise.resolve(false);
       }
+      // Preferred: the free Cloudflare Worker backend (see worker/).
+      var api = (window.ORION_CONFIG && window.ORION_CONFIG.entitlementApi) || '';
+      if (api) {
+        return user.getIdToken()
+          .then(function (token) {
+            return fetch(api.replace(/\/$/, '') + '/entitlement', {
+              headers: { Authorization: 'Bearer ' + token },
+            });
+          })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (d) { return !!(d && d.premium); })
+          .catch(function () { return false; });
+      }
+      // Fallback: read Firestore directly (Cloud Function pipeline).
       var url = 'https://firestore.googleapis.com/v1/projects/' +
         encodeURIComponent(cfg.projectId) +
         '/databases/(default)/documents/entitlements/' +

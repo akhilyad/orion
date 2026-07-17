@@ -121,7 +121,33 @@ There is no backend. Any static host works, free tier included:
 it. If you self-host with nginx/Apache instead, copy the security headers
 from `server.js` (especially `Content-Security-Policy`).
 
-### Accounts + automatic premium activation (optional)
+### Accounts + automatic premium activation — free path (recommended)
+
+The webhook can run as a **Cloudflare Worker** instead of a Firebase Cloud
+Function — completely free (100k requests/day), no Blaze plan, no card:
+
+```bash
+cd worker
+npx wrangler login
+npx wrangler kv namespace create ENTITLEMENTS   # paste the id into wrangler.toml
+npx wrangler secret put STRIPE_WEBHOOK_SECRET    # whsec_... (from the Stripe webhook)
+npx wrangler secret put STRIPE_SECRET_KEY        # optional: enables cancel-revoke
+npx wrangler deploy                              # prints your worker URL
+```
+
+Point the Stripe webhook endpoint at `<worker-url>/stripe-webhook`
+(events: `checkout.session.completed`, `customer.subscription.deleted`),
+and paste the worker URL into `entitlementApi` in `public/js/config.js`.
+The worker verifies Stripe signatures, stores entitlements in KV, and
+serves `/entitlement` to signed-in users after verifying their Firebase ID
+token against Google's public keys. To grant premium manually (e.g. for a
+purchase made before the webhook existed):
+
+```bash
+npx wrangler kv key put --binding ENTITLEMENTS "email:you@example.com" '{"premium":true}' --remote
+```
+
+### Accounts + automatic premium activation via Firebase (Blaze plan)
 
 Sign-in (Google / GitHub / Facebook / phone) lives at `/account.html`, powered
 by Firebase Auth — config goes in `ORION_CONFIG.firebase`. To make a Stripe
