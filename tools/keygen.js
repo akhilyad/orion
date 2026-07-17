@@ -19,7 +19,7 @@
 const crypto = require('crypto');
 
 // ── Keep in sync with public/js/license.js ─────────────────────────────
-const DEFAULT_SALT = 'ORION-CHANGE-THIS-SALT-BEFORE-LAUNCH';
+const DEFAULT_SALT = 'x8Yk_fYBuU7DeC24UtV1SUUmL4wB6UyRXAwJeWt8Qrw';
 const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no I/L/O/0/1
 
 function fnv1a(str) {

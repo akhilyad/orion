@@ -12,7 +12,7 @@
   'use strict';
 
   // ── Keep in sync with tools/keygen.js ──────────────────────────────
-  var ORION_LICENSE_SALT = 'ORION-CHANGE-THIS-SALT-BEFORE-LAUNCH';
+  var ORION_LICENSE_SALT = 'x8Yk_fYBuU7DeC24UtV1SUUmL4wB6UyRXAwJeWt8Qrw';
   var ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 
   function fnv1a(str) {
